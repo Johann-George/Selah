@@ -16,19 +16,28 @@ export function SessionScreenConnected() {
     <SessionScreen
       onBack={() => navigation.goBack()}
       onFinish={async (duration, bibleReference) => {
-        const session = await createSession(user.id, {
-          date: new Date().toISOString().slice(0, 10),
-          duration,
-          bibleReference,
-          qualities: [],
-          undertakings: [],
-          actions: [],
-        });
-        navigation.navigate('Reflection', {
-          sessionId: session.id,
-          duration,
-          bibleReference,
-        });
+        try {
+          console.log("User:", user);
+          const session = await createSession(user.id, {
+            date: new Date().toISOString().slice(0, 10),
+            duration,
+            bibleReference,
+            qualities: [],
+            undertakings: [],
+            actions: [],
+          });
+
+          console.log("Session created:", session);
+
+          navigation.navigate('Reflection', {
+            sessionId: session.id,
+            duration,
+            bibleReference,
+          });
+        }
+        catch (error) {
+          console.log("Error creating session:", error);
+        }
       }}
     />
   );

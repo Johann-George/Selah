@@ -19,6 +19,8 @@ const firebaseConfig = {
   appId: process.env.EXPO_PUBLIC_FIREBASE_APP_ID ?? '',
 };
 
+console.log("Firebase Config:", firebaseConfig);
+
 let app: FirebaseApp;
 let auth: Auth;
 let db: Firestore;
