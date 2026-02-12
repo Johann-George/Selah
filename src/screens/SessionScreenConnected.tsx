@@ -1,4 +1,5 @@
 import React from 'react';
+import { Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { SessionScreen } from './SessionScreen';
@@ -17,7 +18,6 @@ export function SessionScreenConnected() {
       onBack={() => navigation.goBack()}
       onFinish={async (duration, bibleReference) => {
         try {
-          console.log("User:", user);
           const session = await createSession(user.id, {
             date: new Date().toISOString().slice(0, 10),
             duration,
@@ -27,16 +27,19 @@ export function SessionScreenConnected() {
             actions: [],
           });
 
-          console.log("Session created:", session);
-
           navigation.navigate('Reflection', {
             sessionId: session.id,
             duration,
             bibleReference,
           });
-        }
-        catch (error) {
-          console.log("Error creating session:", error);
+        } catch (error) {
+          const message = error instanceof Error ? error.message : 'Failed to create session. Please check your connection and try again.';
+          console.error('Error creating session:', error);
+          Alert.alert(
+            'Could not save session',
+            message,
+            [{ text: 'OK' }]
+          );
         }
       }}
     />

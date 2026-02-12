@@ -8,7 +8,7 @@
 
 import { initializeApp, getApps, FirebaseApp } from 'firebase/app';
 import { getAuth, Auth } from 'firebase/auth';
-import { getFirestore, Firestore } from 'firebase/firestore';
+import { initializeFirestore, getFirestore, Firestore } from 'firebase/firestore';
 
 const firebaseConfig = {
   apiKey: process.env.EXPO_PUBLIC_FIREBASE_API_KEY ?? '',
@@ -28,7 +28,11 @@ let db: Firestore;
 if (!getApps().length) {
   app = initializeApp(firebaseConfig);
   auth = getAuth(app);
-  db = getFirestore(app);
+  // Use long-polling for React Native – fixes addDoc/write failures from WebChannel transport issues
+  db = initializeFirestore(app, {
+    experimentalForceLongPolling: true,
+    ignoreUndefinedProperties: true, // prevents errors when optional fields are undefined
+  });
 } else {
   app = getApps()[0] as FirebaseApp;
   auth = getAuth(app);
