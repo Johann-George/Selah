@@ -38,11 +38,7 @@ export function SessionScreen({ onFinish, onBack }: SessionScreenProps) {
 
   const handleStop = () => {
     setRunning(false);
-    if (seconds > 0) {
-      onFinish(seconds, bibleReference.trim() || 'Not specified');
-    } else {
-      onBack();
-    }
+    onFinish(seconds, bibleReference.trim() || 'Not specified');
   };
 
   return (

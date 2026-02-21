@@ -41,29 +41,41 @@ export async function createSession(
   userId: string,
   data: Omit<Session, 'id' | 'userId' | 'createdAt' | 'updatedAt'>
 ): Promise<Session> {
-  try {
-    const now = new Date().toISOString();
-    const payload = {
-      userId,
-      date: data.date,
-      duration: data.duration,
-      bibleReference: data.bibleReference,
-      qualities: data.qualities ?? [],
-      undertakings: data.undertakings ?? [],
-      actions: data.actions ?? [],
-      points: data.points ?? {},
-      createdAt: Timestamp.now(),
-      updatedAt: Timestamp.now(),
-    };
-    console.log("Creating session with:", payload);
-    const ref = await addDoc(collection(db, SESSIONS), payload);
-    console.log("Document created with ID:", ref);
-    return toSession(ref.id, { ...payload, createdAt: now, updatedAt: now });
-  }
-  catch (error) {
-    console.error("Firestore error:", error);
-    throw error;
-  }
+  const now = new Date().toISOString();
+  const payload = {
+    userId,
+    date: data.date,
+    duration: data.duration,
+    bibleReference: data.bibleReference,
+    qualities: data.qualities ?? [],
+    undertakings: data.undertakings ?? [],
+    actions: data.actions ?? [],
+    points: data.points ?? {},
+    createdAt: Timestamp.now(),
+    updatedAt: Timestamp.now(),
+  };
+  
+  console.log('[createSession] Starting addDoc with payload:', JSON.stringify(payload));
+  console.log('[createSession] DB instance:', db);
+  console.log('[createSession] Collection path:', SESSIONS);
+  
+  const timeoutPromise = new Promise((_, reject) => 
+    setTimeout(() => {
+      console.log('[createSession] TIMEOUT - addDoc did not complete in 10s');
+      reject(new Error('Firestore write timeout after 10s'));
+    }, 10000)
+  );
+  
+  const ref = await Promise.race([
+    addDoc(collection(db, SESSIONS), payload).then(r => {
+      console.log('[createSession] addDoc SUCCESS, ref.id:', r.id);
+      return r;
+    }),
+    timeoutPromise
+  ]) as any;
+  
+  console.log('[createSession] Returning session with ID:', ref.id);
+  return toSession(ref.id, { ...payload, createdAt: now, updatedAt: now });
 }
 
 export async function getSession(sessionId: string): Promise<Session | null> {

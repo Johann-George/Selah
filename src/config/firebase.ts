@@ -8,7 +8,7 @@
 
 import { initializeApp, getApps, FirebaseApp } from 'firebase/app';
 import { getAuth, Auth } from 'firebase/auth';
-import { initializeFirestore, getFirestore, Firestore } from 'firebase/firestore';
+import { initializeFirestore, getFirestore, Firestore, setLogLevel } from 'firebase/firestore';
 
 const firebaseConfig = {
   apiKey: process.env.EXPO_PUBLIC_FIREBASE_API_KEY ?? '',
@@ -21,22 +21,28 @@ const firebaseConfig = {
 
 console.log("Firebase Config:", firebaseConfig);
 
+// Enable debug logging
+setLogLevel('debug');
+
 let app: FirebaseApp;
 let auth: Auth;
 let db: Firestore;
 
 if (!getApps().length) {
   app = initializeApp(firebaseConfig);
-  auth = getAuth(app);
-  // Use long-polling for React Native – fixes addDoc/write failures from WebChannel transport issues
-  db = initializeFirestore(app, {
-    experimentalForceLongPolling: true,
-    ignoreUndefinedProperties: true, // prevents errors when optional fields are undefined
-  });
 } else {
   app = getApps()[0] as FirebaseApp;
-  auth = getAuth(app);
-  db = getFirestore(app);
+}
+
+auth = getAuth(app);
+
+try {
+  db = initializeFirestore(app, {
+    experimentalForceLongPolling: true,
+  });
+} catch (e) {
+  console.log('Firestore already initialized, using existing instance');
+  db = getFirestore(app) as Firestore;
 }
 
 export { app, auth, db };
