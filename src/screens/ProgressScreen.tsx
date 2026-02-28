@@ -57,9 +57,8 @@ export function ProgressScreen({
   };
 
   return (
-    <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
+    <SafeAreaView style={styles.container} edges={['bottom']}>
       <View style={styles.content}>
-        <Text style={styles.title}>Progress</Text>
         <Text style={styles.subtitle}>
           {totalSessions} session{totalSessions !== 1 ? 's' : ''} in the last 12 weeks
         </Text>
@@ -91,7 +90,6 @@ export function ProgressScreen({
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.background },
   content: { flex: 1, padding: 24 },
-  title: { ...typography.h1, color: colors.text, marginBottom: 4 },
   subtitle: { ...typography.bodySmall, color: colors.textSecondary, marginBottom: 24 },
   heatmap: { flexDirection: 'column', marginBottom: 16, gap: CELL_GAP },
   row: { flexDirection: 'row', gap: CELL_GAP },

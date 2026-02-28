@@ -52,6 +52,6 @@ export function ReflectionScreenConnected() {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.background },
   emptyState: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: 24 },
-  emptyText: { ...typography.h2, color: colors.textPrimary, marginBottom: 8 },
+  emptyText: { ...typography.h2, color: colors.text, marginBottom: 8 },
   emptySubtext: { ...typography.body, color: colors.textMuted, textAlign: 'center' },
 });
