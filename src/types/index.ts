@@ -41,6 +41,7 @@ export type RootStackParamList = {
 
 export type MainTabParamList = {
   Home: undefined;
+  Reflection: undefined;
   Progress: undefined;
   Profile: undefined;
 };
@@ -48,5 +49,9 @@ export type MainTabParamList = {
 export type HomeStackParamList = {
   HomeTab: undefined;
   Session: undefined;
-  Reflection: { sessionId: string; duration: number; bibleReference: string };
+};
+
+export type ReflectionTabParamList = {
+  Read: undefined;
+  Reflect: { sessionId?: string; duration?: number; bibleReference?: string };
 };

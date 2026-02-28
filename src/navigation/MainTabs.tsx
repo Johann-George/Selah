@@ -2,6 +2,7 @@ import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Text } from 'react-native';
 import { HomeStack } from './HomeStack';
+import { ReflectionTabs } from './ReflectionTabs';
 import { ProgressScreenConnected } from '../screens/ProgressScreenConnected';
 import { ProfileScreenConnected } from '../screens/ProfileScreenConnected';
 import type { MainTabParamList } from '../types';
@@ -23,6 +24,11 @@ export function MainTabs() {
         name="Home"
         component={HomeStack}
         options={{ tabBarLabel: 'Today' }}
+      />
+      <Tab.Screen
+        name="Reflection"
+        component={ReflectionTabs}
+        options={{ tabBarLabel: 'Reflect' }}
       />
       <Tab.Screen
         name="Progress"
