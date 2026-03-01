@@ -7,7 +7,7 @@ import { ReflectionScreenConnected } from '../screens/ReflectionScreenConnected'
 import type { ReflectionTabParamList } from '../types';
 import { colors, typography } from '../theme';
 import Entypo from '@expo/vector-icons/Entypo';
-import AntDesign from '@expo/vector-icons/AntDesign';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
 
 const Tab = createMaterialTopTabNavigator<ReflectionTabParamList>();
 
@@ -39,7 +39,7 @@ export function ReflectionTabs() {
           component={ReadScreen}
           options={{ 
             tabBarLabel: 'Read',
-            tabBarIcon: () => <Entypo name="open-book" size={4} color="black" />,
+            tabBarIcon: () => <Entypo name="open-book" size={24} color="black" />,
           }}
         />
         <Tab.Screen
@@ -47,7 +47,7 @@ export function ReflectionTabs() {
           component={ReflectionScreenConnected}
           options={{ 
             tabBarLabel: 'Reflect',
-            tabBarIcon: ({ color }) => <AntDesign name="mobile" size={24} color="black" />,
+            tabBarIcon: () => <FontAwesome name="pencil-square-o" size={24} color="black" />,
           }}
         />
       </Tab.Navigator>
