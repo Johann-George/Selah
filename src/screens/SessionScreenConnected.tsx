@@ -25,6 +25,11 @@ export function SessionScreenConnected() {
   return (
     <SessionScreen
       onBack={() => navigation.goBack()}
+      userName={user.name}
+      onProfilePress={() => {
+        const parent = navigation.getParent();
+        if (parent) parent.navigate('Profile');
+      }}
       onFinish={async (duration, bibleReference) => {
         try {
           const session = await createSession(user.id, {

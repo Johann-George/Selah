@@ -1,15 +1,18 @@
 import React from 'react';
+import { useNavigation } from '@react-navigation/native';
 import { ProfileScreen } from './ProfileScreen';
 import { useAuthContext } from '../context/AuthContext';
-import { signOut } from '../services/auth';
 
 export function ProfileScreenConnected() {
   const user = useAuthContext();
+  const navigation = useNavigation();
 
   return (
     <ProfileScreen
       user={user}
-      onSignOut={() => signOut()}
+      onNavigateToProgress={() => navigation.navigate('Progress' as never)}
+      onNavigateToActivities={() => navigation.navigate('Activities' as never)}
+      onNavigateToSettings={() => navigation.navigate('Settings' as never)}
     />
   );
 }

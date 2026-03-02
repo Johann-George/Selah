@@ -1,9 +1,12 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ReadScreen } from '../screens/ReadScreen';
 import { ReflectionScreenConnected } from '../screens/ReflectionScreenConnected';
+import { Header } from '../components';
+import { useAuthContext } from '../context/AuthContext';
+import { useNavigation } from '@react-navigation/native';
 import type { ReflectionTabParamList } from '../types';
 import { colors, typography } from '../theme';
 import Entypo from '@expo/vector-icons/Entypo';
@@ -11,19 +14,19 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 
 const Tab = createMaterialTopTabNavigator<ReflectionTabParamList>();
 
-function ReflectionHeader() {
-  return (
-    <View style={styles.header}>
-      <Text style={styles.title}>Reflection</Text>
-      <Text style={styles.subtitle}>Read the Word, then reflect on what you've received</Text>
-    </View>
-  );
-}
-
 export function ReflectionTabs() {
+  const user = useAuthContext();
+  const navigation = useNavigation();
+
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
-      <ReflectionHeader />
+      <Header
+        title="Reflection"
+        subtitle="Read the Word, then reflect on what you've received"
+        showProfile={true}
+        userName={user.name}
+        onProfilePress={() => navigation.navigate('Profile' as never)}
+      />
       <Tab.Navigator
         screenOptions={{
           tabBarActiveTintColor: colors.primary,
@@ -57,7 +60,4 @@ export function ReflectionTabs() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.background },
-  header: { paddingHorizontal: 24, paddingTop: 16, paddingBottom: 12, backgroundColor: colors.background },
-  title: { ...typography.h1, color: colors.text, marginBottom: 4 },
-  subtitle: { ...typography.bodySmall, color: colors.textSecondary },
 });

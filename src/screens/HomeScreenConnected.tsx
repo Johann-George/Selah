@@ -4,9 +4,14 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { HomeScreen } from './HomeScreen';
 import { useAuthContext } from '../context/AuthContext';
 import { useTodaySession } from '../hooks/useTodaySession';
-import type { HomeStackParamList } from '../types';
+import type { HomeStackParamList, MainTabParamList } from '../types';
+import { CompositeNavigationProp } from '@react-navigation/native';
+import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 
-type Nav = NativeStackNavigationProp<HomeStackParamList, 'HomeTab'>;
+type Nav = CompositeNavigationProp<
+  NativeStackNavigationProp<HomeStackParamList, 'HomeTab'>,
+  BottomTabNavigationProp<MainTabParamList>
+>;
 
 export function HomeScreenConnected() {
   const navigation = useNavigation<Nav>();
@@ -18,6 +23,8 @@ export function HomeScreenConnected() {
       onStartSession={() => navigation.navigate('Session')}
       todayDuration={duration}
       todayReference={reference}
+      userName={user.name}
+      onProfilePress={() => navigation.navigate('Profile')}
     />
   );
 }

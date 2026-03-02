@@ -59,4 +59,6 @@ export type ReflectionTabParamList = {
 export type ProfileTabParamList = {
   Progress: undefined;
   Activities: undefined;
+  ProfileInfo: undefined;
+  Settings: undefined;
 };

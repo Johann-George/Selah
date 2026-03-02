@@ -12,18 +12,16 @@ const Stack = createNativeStackNavigator<HomeStackParamList>();
 export function HomeStack() {
   return (
     <Stack.Navigator
-      screenOptions={{ headerShown: true, headerBackTitle: 'Back' }}
+      screenOptions={{ headerShown: false }}
       initialRouteName="HomeTab"
     >
       <Stack.Screen
         name="HomeTab"
         component={HomeScreenConnected}
-        options={{ title: 'Selah' }}
       />
       <Stack.Screen
         name="Session"
         component={SessionScreenConnected}
-        options={{ title: 'Quiet time' }}
       />
     </Stack.Navigator>
   );

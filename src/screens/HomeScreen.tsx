@@ -4,27 +4,37 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Button, Card } from '../components';
+import { Button, Card, Header } from '../components';
 import { colors, typography } from '../theme';
 
 interface HomeScreenProps {
   onStartSession: () => void;
   todayDuration?: number;
   todayReference?: string;
+  userName?: string;
+  onProfilePress?: () => void;
 }
 
 export function HomeScreen({
   onStartSession,
   todayDuration = 0,
   todayReference = '',
+  userName = 'User',
+  onProfilePress,
 }: HomeScreenProps) {
   const hasSession = todayDuration > 0 || todayReference;
 
   return (
     <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
+      <Header
+        title="Today"
+        subtitle="Your quiet time"
+        showProfile={true}
+        userName={userName}
+        onProfilePress={onProfilePress}
+        large={true}
+      />
       <View style={styles.content}>
-        <Text style={styles.title}>Today</Text>
-        <Text style={styles.subtitle}>Your quiet time</Text>
         {hasSession ? (
           <Card style={styles.card}>
             <Text style={styles.cardTitle}>Today&apos;s session</Text>
@@ -53,8 +63,6 @@ export function HomeScreen({
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.background },
   content: { flex: 1, padding: 24 },
-  title: { ...typography.h1, color: colors.text, marginBottom: 4 },
-  subtitle: { ...typography.body, color: colors.textSecondary, marginBottom: 24 },
   card: { marginBottom: 24 },
   cardTitle: { ...typography.h3, color: colors.text, marginBottom: 8 },
   body: { ...typography.bodySmall, color: colors.textSecondary, marginBottom: 4 },
