@@ -16,6 +16,10 @@ interface ReflectionScreenProps {
     qualities: string[];
     undertakings: string[];
     actions: string[];
+    livesOfPeople: string[];
+    iniquities: string[];
+    tellToOthers: string[];
+    yield: string[];
   }) => Promise<void>;
   onBack: () => void;
 }
@@ -30,6 +34,10 @@ export function ReflectionScreen({
   const [qualities, setQualities] = useState('');
   const [undertakings, setUndertakings] = useState('');
   const [actions, setActions] = useState('');
+  const [livesOfPeople, setLivesOfPeople] = useState('');
+  const [iniquities, setIniquities] = useState('');
+  const [tellToOthers, setTellToOthers] = useState('');
+  const [yieldField, setYieldField] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -41,6 +49,10 @@ export function ReflectionScreen({
         qualities: qualities.split('\n').map((s) => s.trim()).filter(Boolean),
         undertakings: undertakings.split('\n').map((s) => s.trim()).filter(Boolean),
         actions: actions.split('\n').map((s) => s.trim()).filter(Boolean),
+        livesOfPeople: livesOfPeople.split('\n').map((s) => s.trim()).filter(Boolean),
+        iniquities: iniquities.split('\n').map((s) => s.trim()).filter(Boolean),
+        tellToOthers: tellToOthers.split('\n').map((s) => s.trim()).filter(Boolean),
+        yield: yieldField.split('\n').map((s) => s.trim()).filter(Boolean),
       });
       onBack();
     } catch (e: unknown) {
@@ -62,30 +74,65 @@ export function ReflectionScreen({
         <Input
           value={qualities}
           onChangeText={setQualities}
-          placeholder="One per line"
+          placeholder="Attribute of God (Father/Son/Holy Spirit)"
           multiline
-          numberOfLines={3}
+          numberOfLines={10}
           containerStyle={styles.inputBlock}
         />
         <Text style={styles.sectionLabel}>U – Undertakings / Promises</Text>
         <Input
           value={undertakings}
           onChangeText={setUndertakings}
-          placeholder="One per line"
+          placeholder="What promises does God make?"
           multiline
-          numberOfLines={3}
+          numberOfLines={10}
           containerStyle={styles.inputBlock}
         />
         <Text style={styles.sectionLabel}>A – Actions / Commands to obey</Text>
         <Input
           value={actions}
           onChangeText={setActions}
-          placeholder="One per line"
+          placeholder="Commands in the passage"
           multiline
           numberOfLines={3}
           containerStyle={styles.inputBlock}
         />
-        {/* L – Life (Obey/Avoid), I – Iniquities, T – Tell to others: add inputs here when needed */}
+        <Text style={styles.sectionLabel}>L – Lives of People</Text>
+        <Input
+          value={livesOfPeople}
+          onChangeText={setLivesOfPeople}
+          placeholder="Examples to follow or avoid"
+          multiline
+          numberOfLines={3}
+          containerStyle={styles.inputBlock}
+        />
+        <Text style={styles.sectionLabel}>I – Iniquities</Text>
+        <Input
+          value={iniquities}
+          onChangeText={setIniquities}
+          placeholder="What sin or struggle is God addressing?"
+          multiline
+          numberOfLines={3}
+          containerStyle={styles.inputBlock}
+        />
+        <Text style={styles.sectionLabel}>T – Tell to Others</Text>
+        <Input
+          value={tellToOthers}
+          onChangeText={setTellToOthers}
+          placeholder="What truth should I share with others?"
+          multiline
+          numberOfLines={3}
+          containerStyle={styles.inputBlock}
+        />
+        <Text style={styles.sectionLabel}>Y – Yield</Text>
+        <Input
+          value={yieldField}
+          onChangeText={setYieldField}
+          placeholder="How to produce the above learning in my present circumstances?"
+          multiline
+          numberOfLines={3}
+          containerStyle={styles.inputBlock}
+        />
         {error ? <Text style={styles.error}>{error}</Text> : null}
         <Button title="Save reflection" onPress={handleSave} loading={loading} style={styles.save} />
         <Button title="Back" onPress={onBack} variant="ghost" />

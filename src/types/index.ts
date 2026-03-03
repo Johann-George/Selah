@@ -6,6 +6,10 @@ export interface User {
   id: string;
   name: string;
   email: string;
+  memberSince?: string;
+  totalSessions?: number;
+  currentStreak?: number;
+  totalMonths?: number;
 }
 
 /** Q U A L I T reflection points – full set for future extension. */
@@ -60,5 +64,6 @@ export type ProfileTabParamList = {
   Progress: undefined;
   Activities: undefined;
   ProfileInfo: undefined;
+  UserDetails: undefined;
   Settings: undefined;
 };

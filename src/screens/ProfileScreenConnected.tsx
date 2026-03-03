@@ -12,7 +12,7 @@ export function ProfileScreenConnected() {
       user={user}
       onNavigateToProgress={() => navigation.navigate('Progress' as never)}
       onNavigateToActivities={() => navigation.navigate('Activities' as never)}
-      onNavigateToSettings={() => navigation.navigate('Settings' as never)}
+      onNavigateToUserDetails={() => navigation.navigate('UserDetails' as never)}
     />
   );
 }

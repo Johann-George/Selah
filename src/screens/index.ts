@@ -4,4 +4,5 @@ export { SessionScreen } from './SessionScreen';
 export { ReflectionScreen } from './ReflectionScreen';
 export { ProgressScreen } from './ProgressScreen';
 export { ProfileScreen } from './ProfileScreen';
+export { UserDetailsScreen } from './UserDetailsScreen';
 export { SettingsScreen } from './SettingsScreen';

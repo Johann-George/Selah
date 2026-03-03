@@ -43,6 +43,10 @@ export function ReflectionScreenConnected() {
           qualities: data.qualities,
           undertakings: data.undertakings,
           actions: data.actions,
+          livesOfPeople: data.livesOfPeople,
+          iniquities: data.iniquities,
+          tellToOthers: data.tellToOthers,
+          yield: data.yield,
         });
       }}
     />

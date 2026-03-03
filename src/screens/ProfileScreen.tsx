@@ -1,11 +1,10 @@
 /**
- * Profile / Settings. Sign out and placeholder for future settings.
+ * Profile screen with tabs for Progress and Activities.
  */
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Entypo } from '@expo/vector-icons';
-import { Card, Header } from '../components';
 import { colors, typography } from '../theme';
 import type { User } from '../types';
 
@@ -13,44 +12,37 @@ interface ProfileScreenProps {
   user: User;
   onNavigateToProgress: () => void;
   onNavigateToActivities: () => void;
-  onNavigateToSettings: () => void;
+  onNavigateToUserDetails: () => void;
 }
 
 export function ProfileScreen({ 
   user, 
   onNavigateToProgress,
   onNavigateToActivities,
-  onNavigateToSettings,
+  onNavigateToUserDetails,
 }: ProfileScreenProps) {
   return (
     <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
-      <Header
-        title="Profile"
-        showProfile={true}
-        showSettings={true}
-        onSettingsPress={onNavigateToSettings}
-        userName={user.name}
-      />
-      <View style={styles.content}>
-        <Card style={styles.card}>
-          <View style={styles.avatarLarge}>
-            <Text style={styles.avatarLargeText}>
+      <View style={styles.header}>
+        <Text style={styles.title}>Profile</Text>
+        <TouchableOpacity onPress={onNavigateToUserDetails} style={styles.profileButton}>
+          <View style={styles.avatar}>
+            <Text style={styles.avatarText}>
               {user.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)}
             </Text>
           </View>
-          <Text style={styles.name}>{user.name}</Text>
-          <Text style={styles.email}>{user.email}</Text>
-        </Card>
-
-        <TouchableOpacity style={styles.menuItem} onPress={onNavigateToProgress}>
+        </TouchableOpacity>
+      </View>
+      <View style={styles.content}>
+        <TouchableOpacity style={styles.tab} onPress={onNavigateToProgress}>
           <Entypo name="bar-graph" size={24} color={colors.text} />
-          <Text style={styles.menuText}>Progress</Text>
+          <Text style={styles.tabText}>Progress</Text>
           <Entypo name="chevron-right" size={24} color={colors.textMuted} />
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.menuItem} onPress={onNavigateToActivities}>
+        <TouchableOpacity style={styles.tab} onPress={onNavigateToActivities}>
           <Entypo name="list" size={24} color={colors.text} />
-          <Text style={styles.menuText}>Activities</Text>
+          <Text style={styles.tabText}>Activities</Text>
           <Entypo name="chevron-right" size={24} color={colors.textMuted} />
         </TouchableOpacity>
       </View>
@@ -60,25 +52,27 @@ export function ProfileScreen({
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.background },
-  content: { flex: 1, padding: 24 },
-  card: { marginBottom: 24, alignItems: 'center', padding: 24 },
-  avatarLarge: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 24,
+    paddingTop: 16,
+    paddingBottom: 12,
+  },
+  title: { ...typography.h1, color: colors.text },
+  profileButton: { padding: 4 },
+  avatar: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
     backgroundColor: colors.primary,
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 16,
   },
-  avatarLargeText: {
-    fontSize: 32,
-    color: '#fff',
-    fontWeight: '700',
-  },
-  name: { ...typography.h2, color: colors.text, marginBottom: 4 },
-  email: { ...typography.bodySmall, color: colors.textSecondary },
-  menuItem: {
+  avatarText: { ...typography.body, color: '#fff', fontWeight: '600' },
+  content: { flex: 1, padding: 24 },
+  tab: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: 16,
@@ -87,7 +81,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     marginBottom: 12,
   },
-  menuText: {
+  tabText: {
     ...typography.body,
     color: colors.text,
     flex: 1,
