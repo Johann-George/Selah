@@ -4,25 +4,23 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { Entypo } from '@expo/vector-icons';
 import { colors, typography } from '../theme';
+import { ProgressScreenConnected } from './ProgressScreenConnected';
+import { ActivitiesScreenConnected } from './ActivitiesScreenConnected';
 import type { User } from '../types';
+
+const Tab = createMaterialTopTabNavigator();
 
 interface ProfileScreenProps {
   user: User;
-  onNavigateToProgress: () => void;
-  onNavigateToActivities: () => void;
   onNavigateToUserDetails: () => void;
 }
 
-export function ProfileScreen({ 
-  user, 
-  onNavigateToProgress,
-  onNavigateToActivities,
-  onNavigateToUserDetails,
-}: ProfileScreenProps) {
+export function ProfileScreen({ user, onNavigateToUserDetails }: ProfileScreenProps) {
   return (
-    <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
+    <SafeAreaView style={styles.container} edges={['top']}>
       <View style={styles.header}>
         <Text style={styles.title}>Profile</Text>
         <TouchableOpacity onPress={onNavigateToUserDetails} style={styles.profileButton}>
@@ -33,19 +31,34 @@ export function ProfileScreen({
           </View>
         </TouchableOpacity>
       </View>
-      <View style={styles.content}>
-        <TouchableOpacity style={styles.tab} onPress={onNavigateToProgress}>
-          <Entypo name="bar-graph" size={24} color={colors.text} />
-          <Text style={styles.tabText}>Progress</Text>
-          <Entypo name="chevron-right" size={24} color={colors.textMuted} />
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.tab} onPress={onNavigateToActivities}>
-          <Entypo name="list" size={24} color={colors.text} />
-          <Text style={styles.tabText}>Activities</Text>
-          <Entypo name="chevron-right" size={24} color={colors.textMuted} />
-        </TouchableOpacity>
-      </View>
+      <Tab.Navigator
+        initialRouteName="Progress"
+        screenOptions={{
+          tabBarActiveTintColor: colors.primary,
+          tabBarInactiveTintColor: colors.textMuted,
+          tabBarLabelStyle: typography.body,
+          tabBarIndicatorStyle: { backgroundColor: colors.primary },
+          tabBarStyle: { backgroundColor: colors.background },
+          tabBarShowIcon: true,
+        }}
+      >
+        <Tab.Screen
+          name="Progress"
+          component={ProgressScreenConnected}
+          options={{
+            tabBarLabel: 'Progress',
+            tabBarIcon: () => <Entypo name="bar-graph" size={24} color="black" />,
+          }}
+        />
+        <Tab.Screen
+          name="Activities"
+          component={ActivitiesScreenConnected}
+          options={{
+            tabBarLabel: 'Activities',
+            tabBarIcon: () => <Entypo name="list" size={24} color="black" />,
+          }}
+        />
+      </Tab.Navigator>
     </SafeAreaView>
   );
 }
@@ -71,20 +84,4 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   avatarText: { ...typography.body, color: '#fff', fontWeight: '600' },
-  content: { flex: 1, padding: 24 },
-  tab: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 16,
-    paddingHorizontal: 16,
-    backgroundColor: colors.surface,
-    borderRadius: 8,
-    marginBottom: 12,
-  },
-  tabText: {
-    ...typography.body,
-    color: colors.text,
-    flex: 1,
-    marginLeft: 16,
-  },
 });

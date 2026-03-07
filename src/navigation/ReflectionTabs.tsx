@@ -28,6 +28,7 @@ export function ReflectionTabs() {
         onProfilePress={() => navigation.navigate('Profile' as never)}
       />
       <Tab.Navigator
+        initialRouteName="Reflect"
         screenOptions={{
           tabBarActiveTintColor: colors.primary,
           tabBarInactiveTintColor: colors.textMuted,

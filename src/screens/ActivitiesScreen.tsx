@@ -1,7 +1,6 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Entypo } from '@expo/vector-icons';
 import { Button, Card } from '../components';
 import { colors, typography } from '../theme';
 import type { Session, User } from '../types';
@@ -11,53 +10,31 @@ interface ActivitiesScreenProps {
   sessions: Session[];
   loading: boolean;
   onSignOut: () => void;
-  onBack: () => void;
 }
 
-export function ActivitiesScreen({ user, sessions, loading, onSignOut, onBack }: ActivitiesScreenProps) {
+export function ActivitiesScreen({ user, sessions, loading, onSignOut }: ActivitiesScreenProps) {
   if (loading) {
     return (
-      <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
-        <View style={styles.header}>
-          <TouchableOpacity onPress={onBack} style={styles.backButton}>
-            <Entypo name="chevron-left" size={28} color={colors.text} />
-          </TouchableOpacity>
-          <Text style={styles.title}>Activities</Text>
-          <View style={styles.placeholder} />
-        </View>
+      <View style={styles.container}>
         <View style={styles.centerContent}>
           <Text style={styles.emptyText}>Loading...</Text>
         </View>
-      </SafeAreaView>
+      </View>
     );
   }
 
   if (sessions.length === 0) {
     return (
-      <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
-        <View style={styles.header}>
-          <TouchableOpacity onPress={onBack} style={styles.backButton}>
-            <Entypo name="chevron-left" size={28} color={colors.text} />
-          </TouchableOpacity>
-          <Text style={styles.title}>Activities</Text>
-          <View style={styles.placeholder} />
-        </View>
+      <View style={styles.container}>
         <View style={styles.centerContent}>
           <Text style={styles.emptyText}>No activities yet</Text>
         </View>
-      </SafeAreaView>
+      </View>
     );
   }
 
   return (
-    <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
-      <View style={styles.header}>
-        <TouchableOpacity onPress={onBack} style={styles.backButton}>
-          <Entypo name="chevron-left" size={28} color={colors.text} />
-        </TouchableOpacity>
-        <Text style={styles.title}>Activities</Text>
-        <View style={styles.placeholder} />
-      </View>
+    <View style={styles.container}>
       <ScrollView style={styles.scroll} contentContainerStyle={styles.content}>
         <Card style={styles.profileCard}>
           <Text style={styles.name}>{user.name}</Text>
@@ -73,31 +50,12 @@ export function ActivitiesScreen({ user, sessions, loading, onSignOut, onBack }:
           </Card>
         ))}
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.background },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.border,
-  },
-  backButton: {
-    padding: 4,
-  },
-  title: {
-    ...typography.h2,
-    color: colors.text,
-  },
-  placeholder: {
-    width: 36,
-  },
   centerContent: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   scroll: { flex: 1 },
   content: { padding: 24, paddingBottom: 48 },

@@ -1,12 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { CompositeNavigationProp } from '@react-navigation/native';
 import { MaterialTopTabNavigationProp } from '@react-navigation/material-top-tabs';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { ReflectionScreen } from './ReflectionScreen';
-import { updateSession } from '../services/sessions';
+import { StartSessionScreen } from './StartSessionScreen';
+import { useAuthContext } from '../context/AuthContext';
+import { createSession, updateSession } from '../services/sessions';
 import type { ReflectionTabParamList, MainTabParamList } from '../types';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { colors, typography } from '../theme';
 
@@ -19,27 +21,49 @@ type Nav = CompositeNavigationProp<
 export function ReflectionScreenConnected() {
   const navigation = useNavigation<Nav>();
   const route = useRoute<ReflectionRoute>();
-  const { sessionId, duration, bibleReference } = route.params || {};
+  const user = useAuthContext();
+  const [sessionData, setSessionData] = useState<{
+    sessionId: string;
+    duration: number;
+    bibleReference: string;
+  } | null>(null);
 
-  if (!sessionId || !duration || !bibleReference) {
+  // If no session data yet, show start session screen
+  if (!sessionData) {
     return (
-      <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
-        <View style={styles.emptyState}>
-          <Text style={styles.emptyText}>No active session</Text>
-          <Text style={styles.emptySubtext}>Start a session from the Today tab to reflect</Text>
-        </View>
-      </SafeAreaView>
+      <StartSessionScreen
+        onStart={async (duration, bibleReference) => {
+          try {
+            const session = await createSession(user.id, {
+              date: new Date().toISOString().slice(0, 10),
+              duration,
+              bibleReference,
+              qualities: [],
+              undertakings: [],
+              actions: [],
+            });
+            setSessionData({
+              sessionId: session.id,
+              duration,
+              bibleReference,
+            });
+          } catch (error) {
+            const message = error instanceof Error ? error.message : 'Failed to create session';
+            Alert.alert('Error', message);
+          }
+        }}
+      />
     );
   }
 
   return (
     <ReflectionScreen
-      sessionId={sessionId}
-      duration={duration}
-      bibleReference={bibleReference}
+      sessionId={sessionData.sessionId}
+      duration={sessionData.duration}
+      bibleReference={sessionData.bibleReference}
       onBack={() => navigation.navigate('Home')}
       onSave={async (data) => {
-        await updateSession(sessionId, {
+        await updateSession(sessionData.sessionId, {
           qualities: data.qualities,
           undertakings: data.undertakings,
           actions: data.actions,
@@ -48,6 +72,8 @@ export function ReflectionScreenConnected() {
           tellToOthers: data.tellToOthers,
           yield: data.yield,
         });
+        setSessionData(null);
+        navigation.navigate('Home');
       }}
     />
   );

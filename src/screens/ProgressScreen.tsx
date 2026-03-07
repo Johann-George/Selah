@@ -22,13 +22,11 @@ interface ProgressScreenProps {
   heatmapData: Record<string, number>;
   /** Optional: total sessions in range */
   totalSessions?: number;
-  onBack: () => void;
 }
 
 export function ProgressScreen({
   heatmapData,
   totalSessions = 0,
-  onBack,
 }: ProgressScreenProps) {
   const { grid, maxCount } = useMemo(() => {
     const today = new Date();
@@ -60,14 +58,7 @@ export function ProgressScreen({
   };
 
   return (
-    <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
-      <View style={styles.header}>
-        <TouchableOpacity onPress={onBack} style={styles.backButton}>
-          <Entypo name="chevron-left" size={28} color={colors.text} />
-        </TouchableOpacity>
-        <Text style={styles.title}>Progress</Text>
-        <View style={styles.placeholder} />
-      </View>
+    <View style={styles.container}>
       <View style={styles.content}>
         <Text style={styles.subtitle}>
           {totalSessions} session{totalSessions !== 1 ? 's' : ''} in the last 12 weeks
@@ -93,31 +84,12 @@ export function ProgressScreen({
           <Text style={styles.legendText}>More</Text>
         </View>
       </View>
-    </SafeAreaView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.background },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.border,
-  },
-  backButton: {
-    padding: 4,
-  },
-  title: {
-    ...typography.h2,
-    color: colors.text,
-  },
-  placeholder: {
-    width: 36,
-  },
   content: { flex: 1, padding: 24 },
   subtitle: { ...typography.bodySmall, color: colors.textSecondary, marginBottom: 24 },
   heatmap: { flexDirection: 'column', marginBottom: 16, gap: CELL_GAP },

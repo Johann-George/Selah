@@ -79,7 +79,7 @@ export function ReflectionScreen({
           numberOfLines={10}
           containerStyle={styles.inputBlock}
         />
-        <Text style={styles.sectionLabel}>U – Undertakings / Promises</Text>
+        <Text style={styles.sectionLabel}>U - Undertakings / Promises</Text>
         <Input
           value={undertakings}
           onChangeText={setUndertakings}
@@ -88,7 +88,7 @@ export function ReflectionScreen({
           numberOfLines={10}
           containerStyle={styles.inputBlock}
         />
-        <Text style={styles.sectionLabel}>A – Actions / Commands to obey</Text>
+        <Text style={styles.sectionLabel}>A - Actions / Commands to obey</Text>
         <Input
           value={actions}
           onChangeText={setActions}
@@ -135,7 +135,6 @@ export function ReflectionScreen({
         />
         {error ? <Text style={styles.error}>{error}</Text> : null}
         <Button title="Save reflection" onPress={handleSave} loading={loading} style={styles.save} />
-        <Button title="Back" onPress={onBack} variant="ghost" />
       </ScrollView>
     </SafeAreaView>
   );
