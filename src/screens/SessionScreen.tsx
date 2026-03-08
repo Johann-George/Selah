@@ -41,7 +41,6 @@ export function SessionScreen({ onFinish, onBack, userName = 'User', onProfilePr
 
   const handleStop = () => {
     setRunning(false);
-    onFinish(seconds, bibleReference.trim() || 'Not specified');
   };
 
   return (
@@ -65,7 +64,10 @@ export function SessionScreen({ onFinish, onBack, userName = 'User', onProfilePr
           <View style={styles.timerActions}>
             <Button
               title={running ? 'Pause' : 'Start'}
-              onPress={() => setRunning(!running)}
+              onPress={() => {
+                setRunning(!running)
+                onFinish(seconds, bibleReference.trim() || 'Not specified');
+              }}
               variant={running ? 'secondary' : 'primary'}
               style={styles.timerBtn}
             />

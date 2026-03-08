@@ -70,7 +70,7 @@ export function ReflectionScreen({
             {bibleReference} · {Math.floor(duration / 60)} min
           </Text>
         </Card>
-        <Text style={styles.sectionLabel}>Q – Qualities of God</Text>
+        <Text style={styles.sectionLabel}>Q - Qualities of God</Text>
         <Input
           value={qualities}
           onChangeText={setQualities}
@@ -97,7 +97,7 @@ export function ReflectionScreen({
           numberOfLines={3}
           containerStyle={styles.inputBlock}
         />
-        <Text style={styles.sectionLabel}>L – Lives of People</Text>
+        <Text style={styles.sectionLabel}>L - Lives of People</Text>
         <Input
           value={livesOfPeople}
           onChangeText={setLivesOfPeople}
@@ -106,7 +106,7 @@ export function ReflectionScreen({
           numberOfLines={3}
           containerStyle={styles.inputBlock}
         />
-        <Text style={styles.sectionLabel}>I – Iniquities</Text>
+        <Text style={styles.sectionLabel}>I - Iniquities</Text>
         <Input
           value={iniquities}
           onChangeText={setIniquities}
@@ -115,7 +115,7 @@ export function ReflectionScreen({
           numberOfLines={3}
           containerStyle={styles.inputBlock}
         />
-        <Text style={styles.sectionLabel}>T – Tell to Others</Text>
+        <Text style={styles.sectionLabel}>T - Tell to Others</Text>
         <Input
           value={tellToOthers}
           onChangeText={setTellToOthers}
@@ -124,7 +124,7 @@ export function ReflectionScreen({
           numberOfLines={3}
           containerStyle={styles.inputBlock}
         />
-        <Text style={styles.sectionLabel}>Y – Yield</Text>
+        <Text style={styles.sectionLabel}>Y - Yield</Text>
         <Input
           value={yieldField}
           onChangeText={setYieldField}

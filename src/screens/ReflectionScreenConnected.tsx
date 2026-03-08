@@ -1,15 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { CompositeNavigationProp } from '@react-navigation/native';
 import { MaterialTopTabNavigationProp } from '@react-navigation/material-top-tabs';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { ReflectionScreen } from './ReflectionScreen';
 import { StartSessionScreen } from './StartSessionScreen';
+import { SessionSummaryScreen } from './SessionSummaryScreen';
 import { useAuthContext } from '../context/AuthContext';
 import { createSession, updateSession } from '../services/sessions';
 import type { ReflectionTabParamList, MainTabParamList } from '../types';
 import { View, Text, StyleSheet, Alert } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { colors, typography } from '../theme';
 
 type ReflectionRoute = RouteProp<ReflectionTabParamList, 'Reflect'>;
@@ -27,16 +27,41 @@ export function ReflectionScreenConnected() {
     duration: number;
     bibleReference: string;
   } | null>(null);
+  const [showSummary, setShowSummary] = useState(false);
+  const timerRef = useRef({ seconds: 0, isRunning: false });
+
+  // If showing summary, display summary screen
+  if (showSummary && sessionData) {
+    return (
+      <SessionSummaryScreen
+        duration={sessionData.duration}
+        bibleReference={sessionData.bibleReference}
+        date={new Date().toLocaleDateString('en-US', { 
+          year: 'numeric', 
+          month: 'long', 
+          day: 'numeric' 
+        })}
+        onDone={() => {
+          setShowSummary(false);
+          setSessionData(null);
+          navigation.navigate('Home');
+        }}
+      />
+    );
+  }
 
   // If no session data yet, show start session screen
   if (!sessionData) {
     return (
       <StartSessionScreen
+        onTimerUpdate={(seconds, isRunning) => {
+          timerRef.current = { seconds, isRunning };
+        }}
         onStart={async (duration, bibleReference) => {
           try {
             const session = await createSession(user.id, {
               date: new Date().toISOString().slice(0, 10),
-              duration,
+              duration: timerRef.current.seconds,
               bibleReference,
               qualities: [],
               undertakings: [],
@@ -44,7 +69,7 @@ export function ReflectionScreenConnected() {
             });
             setSessionData({
               sessionId: session.id,
-              duration,
+              duration: timerRef.current.seconds,
               bibleReference,
             });
           } catch (error) {
@@ -72,8 +97,7 @@ export function ReflectionScreenConnected() {
           tellToOthers: data.tellToOthers,
           yield: data.yield,
         });
-        setSessionData(null);
-        navigation.navigate('Home');
+        setShowSummary(true);
       }}
     />
   );

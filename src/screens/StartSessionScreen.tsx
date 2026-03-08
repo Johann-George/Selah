@@ -14,9 +14,10 @@ function formatTime(seconds: number): string {
 
 interface StartSessionScreenProps {
   onStart: (duration: number, bibleReference: string) => void;
+  onTimerUpdate?: (seconds: number, isRunning: boolean) => void;
 }
 
-export function StartSessionScreen({ onStart }: StartSessionScreenProps) {
+export function StartSessionScreen({ onStart, onTimerUpdate }: StartSessionScreenProps) {
   const [running, setRunning] = useState(false);
   const [seconds, setSeconds] = useState(0);
   const [bibleReference, setBibleReference] = useState('');
@@ -29,10 +30,11 @@ export function StartSessionScreen({ onStart }: StartSessionScreenProps) {
       clearInterval(intervalRef.current);
       intervalRef.current = null;
     }
+    onTimerUpdate?.(seconds, running);
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
     };
-  }, [running]);
+  }, [running, seconds, onTimerUpdate]);
 
   const handleStart = () => {
     setRunning(false);
@@ -44,20 +46,12 @@ export function StartSessionScreen({ onStart }: StartSessionScreenProps) {
       <View style={styles.content}>
         <Card style={styles.timerCard}>
           <Text style={styles.timer}>{formatTime(seconds)}</Text>
-          <View style={styles.timerActions}>
-            <Button
-              title={running ? 'Pause' : 'Start'}
-              onPress={() => setRunning(!running)}
-              variant={running ? 'secondary' : 'primary'}
-              style={styles.timerBtn}
-            />
-            <Button
-              title="End session"
-              onPress={handleStart}
-              variant="outline"
-              style={styles.timerBtn}
-            />
-          </View>
+          <Button
+            title={running ? 'Pause' : 'Start'}
+            onPress={() => setRunning(!running)}
+            variant={running ? 'secondary' : 'primary'}
+            style={styles.timerBtn}
+          />
         </Card>
         <Input
           label="Bible passage"
@@ -75,6 +69,5 @@ const styles = StyleSheet.create({
   content: { flex: 1, padding: 24 },
   timerCard: { marginBottom: 24, alignItems: 'center' },
   timer: { fontSize: 48, fontWeight: '700', color: colors.primary, marginBottom: 16 },
-  timerActions: { flexDirection: 'row', gap: 12 },
   timerBtn: { minWidth: 120 },
 });

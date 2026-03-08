@@ -14,6 +14,7 @@ export const colors = {
   textMuted: '#9C958D',
   border: '#E8E4DE',
   success: '#4A7C59',
+  successLight: '#E8F5E9',
   error: '#B85450',
   warning: '#C4A77D',
 } as const;
