@@ -31,7 +31,10 @@ function toSession(id: string, data: Record<string, unknown>): Session {
     qualities: (data.qualities as string[]) ?? [],
     undertakings: (data.undertakings as string[]) ?? [],
     actions: (data.actions as string[]) ?? [],
-    points: data.points as Session['points'],
+    livesOfPeople: (data.livesOfPeople as string[]) ?? [],
+    iniquities: (data.iniquities as string[]) ?? [],
+    tellToOthers: (data.tellToOthers as string[]) ?? [],
+    yield: (data.yield as string[]) ?? [],
     createdAt: (data.createdAt as Timestamp)?.toDate?.()?.toISOString?.() ?? (data.createdAt as string),
     updatedAt: (data.updatedAt as Timestamp)?.toDate?.()?.toISOString?.() ?? (data.updatedAt as string),
   };
@@ -50,7 +53,10 @@ export async function createSession(
     qualities: data.qualities ?? [],
     undertakings: data.undertakings ?? [],
     actions: data.actions ?? [],
-    points: data.points ?? {},
+    livesOfPeople: data.livesOfPeople ?? [],
+    iniquities: data.iniquities ?? [],
+    tellToOthers: data.tellToOthers ?? [],
+    yield: data.yield ?? [],
     createdAt: Timestamp.now(),
     updatedAt: Timestamp.now(),
   };
@@ -104,7 +110,7 @@ export async function getSessionsByUser(
 
 export async function updateSession(
   sessionId: string,
-  updates: Partial<Pick<Session, 'duration' | 'bibleReference' | 'qualities' | 'undertakings' | 'actions' | 'points'>>
+  updates: Partial<Pick<Session, 'duration' | 'bibleReference' | 'qualities' | 'undertakings' | 'actions' | 'livesOfPeople' | 'iniquities' | 'tellToOthers' | 'yield'>>
 ): Promise<void> {
   const ref = doc(db, SESSIONS, sessionId);
   await updateDoc(ref, {

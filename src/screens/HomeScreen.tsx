@@ -37,7 +37,7 @@ export function HomeScreen({
       <View style={styles.content}>
         {hasSession ? (
           <Card style={styles.card}>
-            <Text style={styles.cardTitle}>Today&apos;s session</Text>
+            <Text style={styles.cardTitle}>Today's session</Text>
             {todayDuration > 0 && (
               <Text style={styles.body}>
                 Duration: {Math.floor(todayDuration / 60)} min

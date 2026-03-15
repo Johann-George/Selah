@@ -12,17 +12,6 @@ export interface User {
   totalMonths?: number;
 }
 
-/** Q U A L I T reflection points – full set for future extension. */
-export interface ReflectionPoints {
-  qualities?: string[];
-  undertakings?: string[];
-  actions?: string[];
-  lifeObey?: string[];
-  lifeAvoid?: string[];
-  iniquities?: string[];
-  tellToOthers?: string[];
-}
-
 export interface Session {
   id: string;
   userId: string;
@@ -32,8 +21,10 @@ export interface Session {
   qualities: string[];
   undertakings: string[];
   actions: string[];
-  /** Placeholder for L/I/T; extend when adding those inputs. */
-  points?: ReflectionPoints;
+  livesOfPeople: string[];
+  iniquities: string[];
+  tellToOthers: string[];
+  yield: string[];
   createdAt?: string; // ISO
   updatedAt?: string;
 }

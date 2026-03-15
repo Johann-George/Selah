@@ -1,7 +1,3 @@
-/**
- * Reflection entry: Q (Qualities), U (Undertakings), A (Actions).
- * L/I/T can be added later as extra sections – structure is ready.
- */
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -54,7 +50,6 @@ export function ReflectionScreen({
         tellToOthers: tellToOthers.split('\n').map((s) => s.trim()).filter(Boolean),
         yield: yieldField.split('\n').map((s) => s.trim()).filter(Boolean),
       });
-      onBack();
     } catch (e: unknown) {
       setError((e as Error).message ?? 'Failed to save');
     } finally {

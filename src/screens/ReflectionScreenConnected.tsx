@@ -66,6 +66,10 @@ export function ReflectionScreenConnected() {
               qualities: [],
               undertakings: [],
               actions: [],
+              livesOfPeople: [],
+              iniquities: [],
+              tellToOthers: [],
+              yield: [],
             });
             setSessionData({
               sessionId: session.id,

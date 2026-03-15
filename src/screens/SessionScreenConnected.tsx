@@ -39,6 +39,10 @@ export function SessionScreenConnected() {
             qualities: [],
             undertakings: [],
             actions: [],
+            livesOfPeople: [],
+            iniquities: [],
+            tellToOthers: [],
+            yield: [],
           });
 
           const parent = navigation.getParent();

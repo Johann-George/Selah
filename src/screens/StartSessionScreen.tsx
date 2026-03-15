@@ -48,7 +48,7 @@ export function StartSessionScreen({ onStart, onTimerUpdate }: StartSessionScree
           <Text style={styles.timer}>{formatTime(seconds)}</Text>
           <Button
             title={running ? 'Pause' : 'Start'}
-            onPress={() => setRunning(!running)}
+            onPress={handleStart}
             variant={running ? 'secondary' : 'primary'}
             style={styles.timerBtn}
           />
