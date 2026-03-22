@@ -10,7 +10,7 @@ import { useAuthContext } from '../context/AuthContext';
 import { createSession, updateSession } from '../services/sessions';
 import type { ReflectionTabParamList, MainTabParamList } from '../types';
 import { View, Text, StyleSheet, Alert } from 'react-native';
-import { colors, typography } from '../theme';
+import { typography } from '../theme';
 
 type ReflectionRoute = RouteProp<ReflectionTabParamList, 'Reflect'>;
 type Nav = CompositeNavigationProp<
@@ -108,8 +108,8 @@ export function ReflectionScreenConnected() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: colors.background },
+  container: { flex: 1 },
   emptyState: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: 24 },
-  emptyText: { ...typography.h2, color: colors.text, marginBottom: 8 },
-  emptySubtext: { ...typography.body, color: colors.textMuted, textAlign: 'center' },
+  emptyText: { ...typography.h2, marginBottom: 8 },
+  emptySubtext: { ...typography.body, textAlign: 'center' },
 });

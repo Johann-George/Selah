@@ -6,11 +6,13 @@ import { ReflectionTabs } from './ReflectionTabs';
 import { GroupsScreen } from '../screens/GroupsScreen';
 import { ProfileTabs } from './ProfileTabs';
 import type { MainTabParamList } from '../types';
-import { colors, typography } from '../theme';
+import { useColors, typography } from '../theme';
 
 const Tab = createBottomTabNavigator<MainTabParamList>();
 
 export function MainTabs() {
+  const colors = useColors();
+
   return (
     <Tab.Navigator
       screenOptions={{
@@ -19,7 +21,7 @@ export function MainTabs() {
         tabBarInactiveTintColor: colors.textMuted,
         tabBarLabelStyle: { ...typography.caption, fontFamily: 'Inter_500Medium' },
         tabBarStyle: {
-          backgroundColor: 'rgba(251,249,245,0.88)',
+          backgroundColor: colors.background,
           borderTopWidth: 0,
           elevation: 0,
           shadowColor: colors.onSurface,
@@ -31,40 +33,10 @@ export function MainTabs() {
         },
       }}
     >
-      <Tab.Screen
-        name="Home"
-        component={HomeStack}
-        options={{
-          tabBarLabel: 'Today',
-          tabBarIcon: ({ color, size }) => <Entypo name="home" size={size} color={color} />,
-        }}
-      />
-      <Tab.Screen
-        name="Reflection"
-        component={ReflectionTabs}
-        options={{
-          tabBarLabel: 'Reflect',
-          headerShown: false,
-          tabBarIcon: ({ color, size }) => <Entypo name="book" size={size} color={color} />,
-        }}
-      />
-      <Tab.Screen
-        name="Groups"
-        component={GroupsScreen}
-        options={{
-          tabBarLabel: 'Groups',
-          tabBarIcon: ({ color, size }) => <Entypo name="users" size={size} color={color} />,
-        }}
-      />
-      <Tab.Screen
-        name="Profile"
-        component={ProfileTabs}
-        options={{
-          tabBarLabel: 'Profile',
-          headerShown: false,
-          tabBarIcon: ({ color, size }) => <Entypo name="user" size={size} color={color} />,
-        }}
-      />
+      <Tab.Screen name="Home" component={HomeStack} options={{ tabBarLabel: 'Today', tabBarIcon: ({ color, size }) => <Entypo name="home" size={size} color={color} /> }} />
+      <Tab.Screen name="Reflection" component={ReflectionTabs} options={{ tabBarLabel: 'Reflect', headerShown: false, tabBarIcon: ({ color, size }) => <Entypo name="book" size={size} color={color} /> }} />
+      <Tab.Screen name="Groups" component={GroupsScreen} options={{ tabBarLabel: 'Groups', tabBarIcon: ({ color, size }) => <Entypo name="users" size={size} color={color} /> }} />
+      <Tab.Screen name="Profile" component={ProfileTabs} options={{ tabBarLabel: 'Profile', headerShown: false, tabBarIcon: ({ color, size }) => <Entypo name="user" size={size} color={color} /> }} />
     </Tab.Navigator>
   );
 }

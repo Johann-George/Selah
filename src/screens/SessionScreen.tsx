@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Entypo } from '@expo/vector-icons';
 import { Button, Input, Card } from '../components';
-import { colors, typography } from '../theme';
+import { useColors, typography } from '../theme';
 
 function formatTime(seconds: number): string {
   const m = Math.floor(seconds / 60);
@@ -19,6 +19,7 @@ interface SessionScreenProps {
 }
 
 export function SessionScreen({ onFinish, onBack, userName = 'User', onProfilePress }: SessionScreenProps) {
+  const colors = useColors();
   const [running, setRunning] = useState(false);
   const [seconds, setSeconds] = useState(0);
   const [bibleReference, setBibleReference] = useState('');
@@ -35,31 +36,27 @@ export function SessionScreen({ onFinish, onBack, userName = 'User', onProfilePr
   }, [running]);
 
   return (
-    <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]} edges={['top', 'bottom']}>
       <View style={styles.header}>
-        <TouchableOpacity onPress={onBack} style={styles.backBtn}>
+        <TouchableOpacity onPress={onBack} style={[styles.iconBtn, { backgroundColor: colors.surfaceContainerLow }]}>
           <Entypo name="chevron-left" size={24} color={colors.onSurfaceVariant} />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Quiet time</Text>
-        <TouchableOpacity onPress={onProfilePress} style={styles.avatarBtn}>
-          <View style={styles.avatar}>
-            <Text style={styles.avatarText}>
+        <Text style={[styles.headerTitle, { color: colors.onSurface }]}>Quiet time</Text>
+        <TouchableOpacity onPress={onProfilePress}>
+          <View style={[styles.avatar, { backgroundColor: colors.primaryContainer }]}>
+            <Text style={[styles.avatarText, { color: colors.primary }]}>
               {userName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)}
             </Text>
           </View>
         </TouchableOpacity>
       </View>
-
       <View style={styles.content}>
-        <Card style={styles.timerCard} variant="elevated">
-          <Text style={styles.timer}>{formatTime(seconds)}</Text>
+        <Card style={{ backgroundColor: colors.surfaceContainerLow, alignItems: 'center' as const, marginBottom: 32 }}>
+          <Text style={[styles.timer, { color: colors.primary }]}>{formatTime(seconds)}</Text>
           <View style={styles.timerActions}>
             <Button
               title={running ? 'Pause' : 'Start'}
-              onPress={() => {
-                setRunning(!running);
-                onFinish(seconds, bibleReference.trim() || 'Not specified');
-              }}
+              onPress={() => { setRunning(!running); onFinish(seconds, bibleReference.trim() || 'Not specified'); }}
               variant={running ? 'secondary' : 'primary'}
               style={styles.timerBtn}
             />
@@ -73,36 +70,14 @@ export function SessionScreen({ onFinish, onBack, userName = 'User', onProfilePr
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: colors.background },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 20,
-    paddingVertical: 12,
-  },
-  backBtn: {
-    width: 40, height: 40, borderRadius: 20,
-    backgroundColor: colors.surfaceContainerLow,
-    justifyContent: 'center', alignItems: 'center',
-  },
-  headerTitle: { ...typography.h3, color: colors.onSurface },
-  avatarBtn: {},
-  avatar: {
-    width: 40, height: 40, borderRadius: 20,
-    backgroundColor: colors.primaryContainer,
-    justifyContent: 'center', alignItems: 'center',
-  },
-  avatarText: { ...typography.bodySmall, fontFamily: 'Inter_600SemiBold', color: colors.primary },
+  container: { flex: 1 },
+  header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 20, paddingVertical: 12 },
+  iconBtn: { width: 40, height: 40, borderRadius: 20, justifyContent: 'center', alignItems: 'center' },
+  headerTitle: { ...typography.h3 },
+  avatar: { width: 40, height: 40, borderRadius: 20, justifyContent: 'center', alignItems: 'center' },
+  avatarText: { ...typography.bodySmall, fontFamily: 'Inter_600SemiBold' },
   content: { flex: 1, paddingHorizontal: 28, paddingTop: 16 },
-  timerCard: { marginBottom: 32, alignItems: 'center', backgroundColor: colors.surfaceContainerLow },
-  timer: {
-    fontFamily: 'Inter_700Bold',
-    fontSize: 64,
-    letterSpacing: -2,
-    color: colors.primary,
-    marginBottom: 24,
-  },
+  timer: { fontFamily: 'Inter_700Bold', fontSize: 64, letterSpacing: -2, marginBottom: 24 },
   timerActions: { flexDirection: 'row', gap: 12 },
   timerBtn: { flex: 1 },
 });

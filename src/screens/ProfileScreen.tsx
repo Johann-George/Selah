@@ -3,10 +3,18 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { Entypo } from '@expo/vector-icons';
-import { colors, typography } from '../theme';
+import { useColors, useTheme, typography } from '../theme';
 import { ProgressScreenConnected } from './ProgressScreenConnected';
 import { ActivitiesScreenConnected } from './ActivitiesScreenConnected';
 import type { User } from '../types';
+
+type ThemeMode = 'system' | 'light' | 'dark';
+const CYCLE: ThemeMode[] = ['system', 'light', 'dark'];
+const ICON: Record<ThemeMode, React.ComponentProps<typeof Entypo>['name']> = {
+  system: 'cycle',
+  light:  'light-up',
+  dark:   'moon',
+};
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -16,17 +24,29 @@ interface ProfileScreenProps {
 }
 
 export function ProfileScreen({ user, onNavigateToUserDetails }: ProfileScreenProps) {
+  const colors = useColors();
+  const { mode, setMode } = useTheme();
   const initials = user.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
 
+  const cycleTheme = () => {
+    const next = CYCLE[(CYCLE.indexOf(mode) + 1) % CYCLE.length];
+    setMode(next);
+  };
+
   return (
-    <SafeAreaView style={styles.container} edges={['top']}>
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]} edges={['top']}>
       <View style={styles.header}>
-        <Text style={styles.title}>Profile</Text>
-        <TouchableOpacity onPress={onNavigateToUserDetails}>
-          <View style={styles.avatar}>
-            <Text style={styles.avatarText}>{initials}</Text>
-          </View>
-        </TouchableOpacity>
+        <Text style={[styles.title, { color: colors.onSurface }]}>Profile</Text>
+        <View style={styles.actions}>
+          <TouchableOpacity onPress={cycleTheme} style={[styles.iconBtn, { backgroundColor: colors.surfaceContainerLow }]}>
+            <Entypo name={ICON[mode]} size={18} color={colors.onSurfaceVariant} />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={onNavigateToUserDetails}>
+            <View style={[styles.avatar, { backgroundColor: colors.primaryContainer }]}>
+              <Text style={[styles.avatarText, { color: colors.primary }]}>{initials}</Text>
+            </View>
+          </TouchableOpacity>
+        </View>
       </View>
       <Tab.Navigator
         screenOptions={{
@@ -46,20 +66,11 @@ export function ProfileScreen({ user, onNavigateToUserDetails }: ProfileScreenPr
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: colors.background },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 28,
-    paddingTop: 20,
-    paddingBottom: 16,
-  },
-  title: { ...typography.displaySm, color: colors.onSurface },
-  avatar: {
-    width: 44, height: 44, borderRadius: 22,
-    backgroundColor: colors.primaryContainer,
-    justifyContent: 'center', alignItems: 'center',
-  },
-  avatarText: { ...typography.body, fontFamily: 'Inter_600SemiBold', color: colors.primary },
+  container: { flex: 1 },
+  header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 28, paddingTop: 20, paddingBottom: 16 },
+  title: { ...typography.displaySm },
+  actions: { flexDirection: 'row', alignItems: 'center', gap: 10 },
+  iconBtn: { width: 40, height: 40, borderRadius: 20, justifyContent: 'center', alignItems: 'center' },
+  avatar: { width: 44, height: 44, borderRadius: 22, justifyContent: 'center', alignItems: 'center' },
+  avatarText: { ...typography.body, fontFamily: 'Inter_600SemiBold' },
 });

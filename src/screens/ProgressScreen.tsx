@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { colors, typography } from '../theme';
+import { useColors, typography } from '../theme';
 
 const CELL_SIZE = 13;
 const CELL_GAP = 4;
@@ -17,6 +17,8 @@ interface ProgressScreenProps {
 }
 
 export function ProgressScreen({ heatmapData, totalSessions = 0 }: ProgressScreenProps) {
+  const colors = useColors();
+
   const { grid, maxCount } = useMemo(() => {
     const today = new Date();
     const start = new Date(today);
@@ -38,18 +40,20 @@ export function ProgressScreen({ heatmapData, totalSessions = 0 }: ProgressScree
   const getColor = (count: number | null) => {
     if (count == null || count === 0) return colors.surfaceContainer;
     const intensity = Math.min(1, count / maxCount);
-    if (intensity <= 0.25) return '#c8ddd7';
-    if (intensity <= 0.5)  return '#a3c4bb';
-    if (intensity <= 0.75) return '#7aab9f';
+    if (intensity <= 0.25) return colors.primaryContainer;
+    if (intensity <= 0.5)  return colors.primaryDim + '80';
+    if (intensity <= 0.75) return colors.primaryDim;
     return colors.primary;
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
       <View style={styles.content}>
-        <Text style={styles.stat}>
+        <Text style={[styles.stat, { color: colors.onSurface }]}>
           {totalSessions}{' '}
-          <Text style={styles.statLabel}>session{totalSessions !== 1 ? 's' : ''} · 12 weeks</Text>
+          <Text style={[styles.statLabel, { color: colors.onSurfaceVariant }]}>
+            session{totalSessions !== 1 ? 's' : ''} · 12 weeks
+          </Text>
         </Text>
         <View style={styles.heatmap}>
           {grid.map((row, rowIndex) => (
@@ -61,11 +65,11 @@ export function ProgressScreen({ heatmapData, totalSessions = 0 }: ProgressScree
           ))}
         </View>
         <View style={styles.legend}>
-          <Text style={styles.legendText}>Less</Text>
-          {[colors.surfaceContainer, '#c8ddd7', '#a3c4bb', '#7aab9f', colors.primary].map((c, i) => (
+          <Text style={[styles.legendText, { color: colors.textMuted }]}>Less</Text>
+          {[colors.surfaceContainer, colors.primaryContainer, colors.primaryDim + '80', colors.primaryDim, colors.primary].map((c, i) => (
             <View key={i} style={[styles.legendCell, { backgroundColor: c }]} />
           ))}
-          <Text style={styles.legendText}>More</Text>
+          <Text style={[styles.legendText, { color: colors.textMuted }]}>More</Text>
         </View>
       </View>
     </View>
@@ -73,14 +77,14 @@ export function ProgressScreen({ heatmapData, totalSessions = 0 }: ProgressScree
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: colors.background },
+  container: { flex: 1 },
   content: { flex: 1, paddingHorizontal: 28, paddingTop: 24 },
-  stat: { ...typography.h2, color: colors.onSurface, marginBottom: 24 },
-  statLabel: { ...typography.body, color: colors.onSurfaceVariant },
+  stat: { ...typography.h2, marginBottom: 24 },
+  statLabel: { ...typography.body },
   heatmap: { flexDirection: 'column', gap: CELL_GAP, marginBottom: 16 },
   row: { flexDirection: 'row', gap: CELL_GAP },
   cell: { width: CELL_SIZE, height: CELL_SIZE, borderRadius: 4 },
   legend: { flexDirection: 'row', alignItems: 'center', gap: 6 },
   legendCell: { width: CELL_SIZE, height: CELL_SIZE, borderRadius: 4 },
-  legendText: { ...typography.caption, color: colors.textMuted },
+  legendText: { ...typography.caption },
 });

@@ -16,11 +16,13 @@ import {
 } from '@expo-google-fonts/inter';
 import { useAuth } from './src/hooks/useAuth';
 import { AuthProvider } from './src/context/AuthContext';
+import { ThemeProvider, useTheme } from './src/context/ThemeContext';
 import { RootNavigator } from './src/navigation/RootNavigator';
-import { colors } from './src/theme';
+import { lightColors } from './src/theme/colors';
 
-export default function App() {
+function AppInner() {
   const { user, loading } = useAuth();
+  const { isDark } = useTheme();
   const [fontsLoaded] = useFonts({
     Inter_400Regular,
     Inter_500Medium,
@@ -30,8 +32,8 @@ export default function App() {
 
   if (loading || !fontsLoaded) {
     return (
-      <View style={styles.loading}>
-        <ActivityIndicator size="large" color={colors.primary} />
+      <View style={[styles.loading, isDark && styles.loadingDark]}>
+        <ActivityIndicator size="large" color={isDark ? '#8fbfb0' : lightColors.primary} />
       </View>
     );
   }
@@ -43,8 +45,16 @@ export default function App() {
           <RootNavigator isAuthenticated={!!user} />
         </AuthProvider>
       </NavigationContainer>
-      <StatusBar style="dark" />
+      <StatusBar style={isDark ? 'light' : 'dark'} />
     </SafeAreaProvider>
+  );
+}
+
+export default function App() {
+  return (
+    <ThemeProvider>
+      <AppInner />
+    </ThemeProvider>
   );
 }
 
@@ -53,6 +63,9 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: colors.background,
+    backgroundColor: lightColors.background,
+  },
+  loadingDark: {
+    backgroundColor: '#141714',
   },
 });
