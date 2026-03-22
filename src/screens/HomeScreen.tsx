@@ -1,6 +1,3 @@
-/**
- * Home / Today. Entry point to start a session; shows today's summary if any.
- */
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -23,38 +20,37 @@ export function HomeScreen({
   onProfilePress,
 }: HomeScreenProps) {
   const hasSession = todayDuration > 0 || todayReference;
+  const firstName = userName.split(' ')[0];
 
   return (
     <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
       <Header
-        title="Today"
-        subtitle="Your quiet time"
-        showProfile={true}
+        title={`Good morning,\n${firstName}.`}
+        subtitle="Your quiet time awaits."
+        showProfile
         userName={userName}
         onProfilePress={onProfilePress}
-        large={true}
+        large
       />
       <View style={styles.content}>
         {hasSession ? (
-          <Card style={styles.card}>
-            <Text style={styles.cardTitle}>Today's session</Text>
+          <Card style={styles.sessionCard}>
+            <Text style={styles.sessionLabel}>Today's session</Text>
             {todayDuration > 0 && (
-              <Text style={styles.body}>
-                Duration: {Math.floor(todayDuration / 60)} min
-              </Text>
+              <Text style={styles.sessionStat}>{Math.floor(todayDuration / 60)} min</Text>
             )}
             {todayReference ? (
-              <Text style={styles.body}>Passage: {todayReference}</Text>
+              <Text style={styles.sessionRef}>{todayReference}</Text>
             ) : null}
           </Card>
         ) : (
-          <Text style={styles.hint}>No session yet today. Start one below.</Text>
+          <View style={styles.emptyArea}>
+            <Text style={styles.emptyText}>No session yet today.</Text>
+          </View>
         )}
-        <Button
-          title="Start quiet time"
-          onPress={onStartSession}
-          style={styles.cta}
-        />
+      </View>
+      <View style={styles.footer}>
+        <Button title="Start quiet time" onPress={onStartSession} style={styles.cta} />
       </View>
     </SafeAreaView>
   );
@@ -62,10 +58,34 @@ export function HomeScreen({
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.background },
-  content: { flex: 1, padding: 24 },
-  card: { marginBottom: 24 },
-  cardTitle: { ...typography.h3, color: colors.text, marginBottom: 8 },
-  body: { ...typography.bodySmall, color: colors.textSecondary, marginBottom: 4 },
-  hint: { ...typography.body, color: colors.textMuted, marginBottom: 24 },
+  content: { flex: 1, paddingHorizontal: 28, paddingTop: 8 },
+  sessionCard: { backgroundColor: colors.primaryContainer },
+  sessionLabel: {
+    ...typography.caption,
+    fontFamily: 'Inter_500Medium',
+    color: colors.primaryDim,
+    textTransform: 'uppercase',
+    letterSpacing: 0.8,
+    marginBottom: 12,
+  },
+  sessionStat: {
+    ...typography.displaySm,
+    color: colors.primary,
+    marginBottom: 4,
+  },
+  sessionRef: {
+    ...typography.body,
+    color: colors.primaryDim,
+  },
+  emptyArea: { flex: 1, justifyContent: 'center', alignItems: 'flex-start' },
+  emptyText: {
+    ...typography.body,
+    color: colors.textMuted,
+  },
+  footer: {
+    paddingHorizontal: 28,
+    paddingBottom: 32,
+    paddingTop: 16,
+  },
   cta: { alignSelf: 'stretch' },
 });

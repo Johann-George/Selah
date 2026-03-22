@@ -1,6 +1,3 @@
-/**
- * Start session screen — opens Bible picker on Start, then hands off to ReflectionScreenConnected.
- */
 import React, { useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Button, Card, BiblePickerModal } from '../components';
@@ -17,14 +14,12 @@ export function StartSessionScreen({ onStart }: StartSessionScreenProps) {
   return (
     <View style={styles.container}>
       <View style={styles.content}>
+        <Text style={styles.heading}>Begin</Text>
+        <Text style={styles.sub}>Select a passage and enter{'\n'}your quiet time.</Text>
         <Card style={styles.card}>
-          <Text style={styles.heading}>Ready to begin?</Text>
-          <Text style={styles.sub}>Select a Bible passage to start your quiet time.</Text>
-          <Button
-            title="Start"
-            onPress={() => setPickerVisible(true)}
-            style={styles.btn}
-          />
+          <Text style={styles.cardLabel}>Today's reading</Text>
+          <Text style={styles.cardHint}>Tap Start to choose a Bible passage</Text>
+          <Button title="Start" onPress={() => setPickerVisible(true)} style={styles.btn} />
         </Card>
       </View>
 
@@ -42,9 +37,17 @@ export function StartSessionScreen({ onStart }: StartSessionScreenProps) {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.background },
-  content: { flex: 1, padding: 24, justifyContent: 'center' },
-  card: { alignItems: 'center', gap: 8 },
-  heading: { ...typography.h2, color: colors.text, marginBottom: 4 },
-  sub: { ...typography.body, color: colors.textSecondary, textAlign: 'center', marginBottom: 16 },
-  btn: { minWidth: 140 },
+  content: { flex: 1, paddingHorizontal: 28, paddingTop: 48, justifyContent: 'flex-start' },
+  heading: { ...typography.displaySm, color: colors.onSurface, marginBottom: 8 },
+  sub: { ...typography.body, color: colors.onSurfaceVariant, lineHeight: 26, marginBottom: 40 },
+  card: { backgroundColor: colors.surfaceContainerLow, gap: 8 },
+  cardLabel: {
+    ...typography.caption,
+    fontFamily: 'Inter_500Medium',
+    color: colors.onSurfaceVariant,
+    textTransform: 'uppercase',
+    letterSpacing: 0.8,
+  },
+  cardHint: { ...typography.body, color: colors.textMuted, marginBottom: 16 },
+  btn: { alignSelf: 'flex-start' },
 });

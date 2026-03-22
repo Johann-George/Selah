@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Switch } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Entypo } from '@expo/vector-icons';
-import { Card } from '../components';
 import { colors, typography } from '../theme';
 import type { User } from '../types';
 
@@ -20,80 +19,97 @@ export function UserDetailsScreen({ user, onBack }: UserDetailsScreenProps) {
   const totalSessions = user.totalSessions || 0;
   const currentStreak = user.currentStreak || 0;
   const totalMonths = user.totalMonths || 0;
+  const initials = user.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
 
   return (
     <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
       <View style={styles.header}>
-        <TouchableOpacity onPress={onBack} style={styles.backButton}>
-          <Entypo name="chevron-left" size={28} color={colors.text} />
+        <TouchableOpacity onPress={onBack} style={styles.backBtn}>
+          <Entypo name="chevron-left" size={22} color={colors.onSurfaceVariant} />
         </TouchableOpacity>
-        <Text style={styles.title}>User Details</Text>
+        <Text style={styles.headerTitle}>Details</Text>
         <View style={styles.placeholder} />
       </View>
-      <ScrollView style={styles.content}>
-        <Card style={styles.profileCard}>
+
+      <ScrollView contentContainerStyle={styles.scroll}>
+        {/* Hero avatar */}
+        <View style={styles.heroSection}>
           <View style={styles.avatarLarge}>
-            <Text style={styles.avatarLargeText}>
-              {user.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)}
-            </Text>
+            <Text style={styles.avatarLargeText}>{initials}</Text>
           </View>
           <Text style={styles.name}>{user.name}</Text>
           <Text style={styles.email}>{user.email}</Text>
-        </Card>
+        </View>
 
-        <Card style={styles.statsCard}>
-          <View style={styles.statRow}>
-            <Text style={styles.statLabel}>Member since</Text>
-            <Text style={styles.statValue}>{memberSince}</Text>
-          </View>
-          <View style={styles.statRow}>
-            <Text style={styles.statLabel}>Sessions</Text>
-            <Text style={styles.statValue}>{totalSessions}</Text>
-          </View>
-          <View style={styles.statRow}>
-            <Text style={styles.statLabel}>Streak</Text>
-            <Text style={styles.statValue}>{currentStreak} days</Text>
-          </View>
-          <View style={styles.statRow}>
-            <Text style={styles.statLabel}>Months</Text>
-            <Text style={styles.statValue}>{totalMonths}</Text>
-          </View>
-        </Card>
+        {/* Stats */}
+        <View style={styles.statsGrid}>
+          <StatTile label="Sessions" value={String(totalSessions)} />
+          <StatTile label="Streak" value={`${currentStreak}d`} />
+          <StatTile label="Months" value={String(totalMonths)} />
+          <StatTile label="Since" value={memberSince.slice(0, 7)} />
+        </View>
 
-        <Card style={styles.preferencesCard}>
-          <Text style={styles.sectionTitle}>Preferences</Text>
-          <View style={styles.preferenceRow}>
-            <Text style={styles.preferenceLabel}>Show streaks</Text>
-            <Switch
-              value={showStreaks}
-              onValueChange={setShowStreaks}
-              trackColor={{ false: colors.border, true: colors.primary }}
-              thumbColor="#fff"
-            />
-          </View>
-          <View style={styles.preferenceRow}>
-            <Text style={styles.preferenceLabel}>Reminders</Text>
-            <Switch
-              value={reminders}
-              onValueChange={setReminders}
-              trackColor={{ false: colors.border, true: colors.primary }}
-              thumbColor="#fff"
-            />
-          </View>
-          <View style={styles.preferenceRow}>
-            <Text style={styles.preferenceLabel}>Points Visibility</Text>
-            <Switch
-              value={pointsVisibility}
-              onValueChange={setPointsVisibility}
-              trackColor={{ false: colors.border, true: colors.primary }}
-              thumbColor="#fff"
-            />
-          </View>
-        </Card>
+        {/* Preferences */}
+        <Text style={styles.sectionLabel}>Preferences</Text>
+        <View style={styles.prefGroup}>
+          <PrefRow label="Show streaks" value={showStreaks} onChange={setShowStreaks} />
+          <PrefRow label="Reminders" value={reminders} onChange={setReminders} />
+          <PrefRow label="Points visibility" value={pointsVisibility} onChange={setPointsVisibility} />
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
 }
+
+function StatTile({ label, value }: { label: string; value: string }) {
+  return (
+    <View style={tileStyles.tile}>
+      <Text style={tileStyles.value}>{value}</Text>
+      <Text style={tileStyles.label}>{label}</Text>
+    </View>
+  );
+}
+
+const tileStyles = StyleSheet.create({
+  tile: {
+    flex: 1,
+    backgroundColor: colors.surfaceContainerLowest,
+    borderRadius: 24,
+    padding: 20,
+    alignItems: 'center',
+    shadowColor: colors.onSurface,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.04,
+    shadowRadius: 12,
+    elevation: 1,
+  },
+  value: { ...typography.h2, color: colors.primary, marginBottom: 4 },
+  label: { ...typography.caption, color: colors.onSurfaceVariant },
+});
+
+function PrefRow({ label, value, onChange }: { label: string; value: boolean; onChange: (v: boolean) => void }) {
+  return (
+    <View style={prefStyles.row}>
+      <Text style={prefStyles.label}>{label}</Text>
+      <Switch
+        value={value}
+        onValueChange={onChange}
+        trackColor={{ false: colors.surfaceContainer, true: colors.primaryContainer }}
+        thumbColor={value ? colors.primary : colors.textMuted}
+      />
+    </View>
+  );
+}
+
+const prefStyles = StyleSheet.create({
+  row: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 14,
+  },
+  label: { ...typography.body, color: colors.onSurface },
+});
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.background },
@@ -101,47 +117,44 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 16,
+    paddingHorizontal: 20,
     paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.border,
   },
-  backButton: { padding: 4 },
-  title: { ...typography.h2, color: colors.text },
-  placeholder: { width: 36 },
-  content: { flex: 1, padding: 24 },
-  profileCard: { marginBottom: 16, alignItems: 'center', padding: 24 },
+  backBtn: {
+    width: 40, height: 40, borderRadius: 20,
+    backgroundColor: colors.surfaceContainerLow,
+    justifyContent: 'center', alignItems: 'center',
+  },
+  headerTitle: { ...typography.h3, color: colors.onSurface },
+  placeholder: { width: 40 },
+  scroll: { paddingHorizontal: 28, paddingBottom: 48 },
+  heroSection: { alignItems: 'center', paddingVertical: 32 },
   avatarLarge: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    backgroundColor: colors.primary,
-    justifyContent: 'center',
-    alignItems: 'center',
+    width: 88, height: 88, borderRadius: 44,
+    backgroundColor: colors.primaryContainer,
+    justifyContent: 'center', alignItems: 'center',
     marginBottom: 16,
   },
-  avatarLargeText: { fontSize: 32, color: '#fff', fontWeight: '700' },
-  name: { ...typography.h2, color: colors.text, marginBottom: 4 },
-  email: { ...typography.bodySmall, color: colors.textSecondary },
-  statsCard: { marginBottom: 16, padding: 16 },
-  statRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.border,
+  avatarLargeText: { fontFamily: 'Inter_700Bold', fontSize: 32, color: colors.primary },
+  name: { ...typography.h2, color: colors.onSurface, marginBottom: 4 },
+  email: { ...typography.bodySmall, color: colors.onSurfaceVariant },
+  statsGrid: { flexDirection: 'row', gap: 10, marginBottom: 40 },
+  sectionLabel: {
+    ...typography.caption,
+    fontFamily: 'Inter_500Medium',
+    color: colors.onSurfaceVariant,
+    textTransform: 'uppercase',
+    letterSpacing: 0.8,
+    marginBottom: 8,
   },
-  statLabel: { ...typography.body, color: colors.text },
-  statValue: { ...typography.body, color: colors.textSecondary },
-  preferencesCard: { marginBottom: 16, padding: 16 },
-  sectionTitle: { ...typography.h3, color: colors.text, marginBottom: 12 },
-  preferenceRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.border,
+  prefGroup: {
+    backgroundColor: colors.surfaceContainerLowest,
+    borderRadius: 24,
+    paddingHorizontal: 20,
+    shadowColor: colors.onSurface,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.04,
+    shadowRadius: 12,
+    elevation: 1,
   },
-  preferenceLabel: { ...typography.body, color: colors.text },
 });

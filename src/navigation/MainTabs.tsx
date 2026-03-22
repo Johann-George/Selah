@@ -17,7 +17,18 @@ export function MainTabs() {
         headerShown: false,
         tabBarActiveTintColor: colors.primary,
         tabBarInactiveTintColor: colors.textMuted,
-        tabBarLabelStyle: typography.caption,
+        tabBarLabelStyle: { ...typography.caption, fontFamily: 'Inter_500Medium' },
+        tabBarStyle: {
+          backgroundColor: 'rgba(251,249,245,0.88)',
+          borderTopWidth: 0,
+          elevation: 0,
+          shadowColor: colors.onSurface,
+          shadowOffset: { width: 0, height: -4 },
+          shadowOpacity: 0.05,
+          shadowRadius: 24,
+          height: 64,
+          paddingBottom: 8,
+        },
       }}
     >
       <Tab.Screen

@@ -1,11 +1,8 @@
-/**
- * Quiet time session: timer + Bible reference. On stop, navigates to Reflection.
- */
 import React, { useState, useRef, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Entypo } from '@expo/vector-icons';
-import { Button, Input, Card, Header } from '../components';
+import { Button, Input, Card } from '../components';
 import { colors, typography } from '../theme';
 
 function formatTime(seconds: number): string {
@@ -34,23 +31,17 @@ export function SessionScreen({ onFinish, onBack, userName = 'User', onProfilePr
       clearInterval(intervalRef.current);
       intervalRef.current = null;
     }
-    return () => {
-      if (intervalRef.current) clearInterval(intervalRef.current);
-    };
+    return () => { if (intervalRef.current) clearInterval(intervalRef.current); };
   }, [running]);
-
-  const handleStop = () => {
-    setRunning(false);
-  };
 
   return (
     <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
       <View style={styles.header}>
-        <TouchableOpacity onPress={onBack} style={styles.backButton}>
-          <Entypo name="chevron-left" size={28} color={colors.text} />
+        <TouchableOpacity onPress={onBack} style={styles.backBtn}>
+          <Entypo name="chevron-left" size={24} color={colors.onSurfaceVariant} />
         </TouchableOpacity>
-        <Text style={styles.title}>Quiet time</Text>
-        <TouchableOpacity onPress={onProfilePress} style={styles.profileButton}>
+        <Text style={styles.headerTitle}>Quiet time</Text>
+        <TouchableOpacity onPress={onProfilePress} style={styles.avatarBtn}>
           <View style={styles.avatar}>
             <Text style={styles.avatarText}>
               {userName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)}
@@ -58,33 +49,24 @@ export function SessionScreen({ onFinish, onBack, userName = 'User', onProfilePr
           </View>
         </TouchableOpacity>
       </View>
+
       <View style={styles.content}>
-        <Card style={styles.timerCard}>
+        <Card style={styles.timerCard} variant="elevated">
           <Text style={styles.timer}>{formatTime(seconds)}</Text>
           <View style={styles.timerActions}>
             <Button
               title={running ? 'Pause' : 'Start'}
               onPress={() => {
-                setRunning(!running)
+                setRunning(!running);
                 onFinish(seconds, bibleReference.trim() || 'Not specified');
               }}
               variant={running ? 'secondary' : 'primary'}
               style={styles.timerBtn}
             />
-            <Button
-              title="End session"
-              onPress={handleStop}
-              variant="outline"
-              style={styles.timerBtn}
-            />
+            <Button title="End session" onPress={() => setRunning(false)} variant="outline" style={styles.timerBtn} />
           </View>
         </Card>
-        <Input
-          label="Bible passage"
-          value={bibleReference}
-          onChangeText={setBibleReference}
-          placeholder="e.g. John 3:16"
-        />
+        <Input label="Bible passage" value={bibleReference} onChangeText={setBibleReference} placeholder="e.g. John 3:16" />
       </View>
     </SafeAreaView>
   );
@@ -96,37 +78,31 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 16,
+    paddingHorizontal: 20,
     paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.border,
   },
-  backButton: {
-    padding: 4,
+  backBtn: {
+    width: 40, height: 40, borderRadius: 20,
+    backgroundColor: colors.surfaceContainerLow,
+    justifyContent: 'center', alignItems: 'center',
   },
-  title: {
-    ...typography.h2,
-    color: colors.text,
-  },
-  profileButton: {
-    padding: 4,
-  },
+  headerTitle: { ...typography.h3, color: colors.onSurface },
+  avatarBtn: {},
   avatar: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: colors.primary,
-    justifyContent: 'center',
-    alignItems: 'center',
+    width: 40, height: 40, borderRadius: 20,
+    backgroundColor: colors.primaryContainer,
+    justifyContent: 'center', alignItems: 'center',
   },
-  avatarText: {
-    ...typography.body,
-    color: '#fff',
-    fontWeight: '600',
+  avatarText: { ...typography.bodySmall, fontFamily: 'Inter_600SemiBold', color: colors.primary },
+  content: { flex: 1, paddingHorizontal: 28, paddingTop: 16 },
+  timerCard: { marginBottom: 32, alignItems: 'center', backgroundColor: colors.surfaceContainerLow },
+  timer: {
+    fontFamily: 'Inter_700Bold',
+    fontSize: 64,
+    letterSpacing: -2,
+    color: colors.primary,
+    marginBottom: 24,
   },
-  content: { flex: 1, padding: 24 },
-  timerCard: { marginBottom: 24, alignItems: 'center' },
-  timer: { fontSize: 48, fontWeight: '700', color: colors.primary, marginBottom: 16 },
   timerActions: { flexDirection: 'row', gap: 12 },
-  timerBtn: { minWidth: 120 },
+  timerBtn: { flex: 1 },
 });

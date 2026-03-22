@@ -1,7 +1,3 @@
-/**
- * Welcome / Onboarding. Assumption: single welcome screen with Get Started;
- * extend with slides or skip logic if Figma specifies.
- */
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -25,14 +21,8 @@ export function OnboardingScreen({ onComplete }: OnboardingScreenProps) {
 
   const handleSignUp = async () => {
     setError('');
-    if (!email.trim() || !password) {
-      setError('Email and password required');
-      return;
-    }
-    if (password.length < 6) {
-      setError('Password must be at least 6 characters');
-      return;
-    }
+    if (!email.trim() || !password) { setError('Email and password required'); return; }
+    if (password.length < 6) { setError('Password must be at least 6 characters'); return; }
     setLoading(true);
     try {
       await signUp(email.trim(), password, name.trim());
@@ -46,10 +36,7 @@ export function OnboardingScreen({ onComplete }: OnboardingScreenProps) {
 
   const handleSignIn = async () => {
     setError('');
-    if (!email.trim() || !password) {
-      setError('Email and password required');
-      return;
-    }
+    if (!email.trim() || !password) { setError('Email and password required'); return; }
     setLoading(true);
     try {
       await signIn(email.trim(), password);
@@ -64,16 +51,18 @@ export function OnboardingScreen({ onComplete }: OnboardingScreenProps) {
   if (mode === 'welcome') {
     return (
       <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
-        <View style={styles.content}>
-          <Text style={styles.title}>Selah</Text>
-          <Text style={styles.subtitle}>Quiet time & Bible study tracking</Text>
-          <View style={styles.actions}>
-            <Button title="Get started" onPress={() => setMode('signUp')} style={styles.button} />
+        <View style={styles.welcomeContent}>
+          <View style={styles.heroArea}>
+            <Text style={styles.wordmark}>Selah</Text>
+            <Text style={styles.tagline}>A quiet space for{'\n'}your daily reflection.</Text>
+          </View>
+          <View style={styles.welcomeActions}>
+            <Button title="Begin" onPress={() => setMode('signUp')} style={styles.primaryBtn} />
             <Button
-              title="I already have an account"
+              title="I have an account"
               onPress={() => setMode('signIn')}
-              variant="outline"
-              style={styles.button}
+              variant="ghost"
+              style={styles.ghostBtn}
             />
           </View>
         </View>
@@ -83,20 +72,14 @@ export function OnboardingScreen({ onComplete }: OnboardingScreenProps) {
 
   return (
     <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        style={styles.keyboard}
-      >
+      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={styles.keyboard}>
         <ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled">
-          <Text style={styles.screenTitle}>{mode === 'signUp' ? 'Create account' : 'Sign in'}</Text>
+          <Text style={styles.screenTitle}>{mode === 'signUp' ? 'Create account' : 'Welcome back'}</Text>
+          <Text style={styles.screenSubtitle}>
+            {mode === 'signUp' ? 'Begin your journey.' : 'Continue where you left off.'}
+          </Text>
           {mode === 'signUp' && (
-            <Input
-              label="Name"
-              value={name}
-              onChangeText={setName}
-              placeholder="Your name"
-              autoCapitalize="words"
-            />
+            <Input label="Name" value={name} onChangeText={setName} placeholder="Your name" autoCapitalize="words" />
           )}
           <Input
             label="Email"
@@ -120,11 +103,7 @@ export function OnboardingScreen({ onComplete }: OnboardingScreenProps) {
             loading={loading}
             style={styles.submit}
           />
-          <Button
-            title={mode === 'signUp' ? 'Back' : 'Back'}
-            onPress={() => setMode('welcome')}
-            variant="ghost"
-          />
+          <Button title="Back" onPress={() => setMode('welcome')} variant="ghost" />
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -134,13 +113,24 @@ export function OnboardingScreen({ onComplete }: OnboardingScreenProps) {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.background },
   keyboard: { flex: 1 },
-  scroll: { padding: 24, paddingTop: 48 },
-  content: { flex: 1, justifyContent: 'center', paddingHorizontal: 24 },
-  title: { ...typography.h1, color: colors.primary, textAlign: 'center', marginBottom: 8 },
-  subtitle: { ...typography.body, color: colors.textSecondary, textAlign: 'center', marginBottom: 48 },
-  screenTitle: { ...typography.h2, color: colors.text, marginBottom: 24 },
-  actions: { gap: 12 },
-  button: { marginBottom: 12 },
-  submit: { marginTop: 8, marginBottom: 12 },
-  error: { ...typography.bodySmall, color: colors.error, marginBottom: 12 },
+  welcomeContent: { flex: 1, paddingHorizontal: 32, justifyContent: 'space-between', paddingBottom: 48 },
+  heroArea: { flex: 1, justifyContent: 'center' },
+  wordmark: {
+    ...typography.displayLg,
+    color: colors.primary,
+    marginBottom: 20,
+  },
+  tagline: {
+    ...typography.h2,
+    color: colors.onSurfaceVariant,
+    lineHeight: 36,
+  },
+  welcomeActions: { gap: 8 },
+  primaryBtn: { alignSelf: 'stretch' },
+  ghostBtn: { alignSelf: 'stretch' },
+  scroll: { paddingHorizontal: 32, paddingTop: 56, paddingBottom: 48 },
+  screenTitle: { ...typography.displaySm, color: colors.onSurface, marginBottom: 8 },
+  screenSubtitle: { ...typography.body, color: colors.onSurfaceVariant, marginBottom: 40 },
+  submit: { marginTop: 8, marginBottom: 16 },
+  error: { ...typography.bodySmall, color: colors.error, marginBottom: 16 },
 });

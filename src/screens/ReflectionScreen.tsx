@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TextInput } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Button, Input, Card } from '../components';
+import { Button } from '../components';
 import { colors, typography } from '../theme';
 
 interface ReflectionScreenProps {
@@ -19,6 +19,73 @@ interface ReflectionScreenProps {
   }) => Promise<void>;
   onBack: () => void;
 }
+
+function ReflectionField({
+  label,
+  letter,
+  value,
+  onChangeText,
+  placeholder,
+  numberOfLines = 3,
+}: {
+  label: string;
+  letter: string;
+  value: string;
+  onChangeText: (t: string) => void;
+  placeholder: string;
+  numberOfLines?: number;
+}) {
+  return (
+    <View style={fieldStyles.container}>
+      <View style={fieldStyles.labelRow}>
+        <Text style={fieldStyles.letter}>{letter}</Text>
+        <Text style={fieldStyles.label}>{label}</Text>
+      </View>
+      <TextInput
+        style={fieldStyles.input}
+        value={value}
+        onChangeText={onChangeText}
+        placeholder={placeholder}
+        placeholderTextColor={colors.textMuted}
+        multiline
+        numberOfLines={numberOfLines}
+        textAlignVertical="top"
+      />
+    </View>
+  );
+}
+
+const fieldStyles = StyleSheet.create({
+  container: { marginBottom: 32 },
+  labelRow: { flexDirection: 'row', alignItems: 'baseline', gap: 10, marginBottom: 10 },
+  letter: {
+    ...typography.h2,
+    color: colors.primary,
+    opacity: 0.35,
+    lineHeight: 28,
+  },
+  label: {
+    ...typography.bodySmall,
+    fontFamily: 'Inter_500Medium',
+    color: colors.onSurfaceVariant,
+    textTransform: 'uppercase',
+    letterSpacing: 0.8,
+  },
+  input: {
+    ...typography.body,
+    color: colors.onSurface,
+    backgroundColor: colors.surfaceContainerLowest,
+    borderRadius: 20,
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    minHeight: 80,
+    shadowColor: colors.onSurface,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.04,
+    shadowRadius: 12,
+    elevation: 1,
+  },
+});
 
 export function ReflectionScreen({
   sessionId,
@@ -60,74 +127,53 @@ export function ReflectionScreen({
   return (
     <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
       <ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled">
-        <Card style={styles.summary}>
-          <Text style={styles.summaryText}>
-            {bibleReference} · {Math.floor(duration / 60)} min
-          </Text>
-        </Card>
-        <Text style={styles.sectionLabel}>Q - Qualities of God</Text>
-        <Input
-          value={qualities}
-          onChangeText={setQualities}
-          placeholder="Attribute of God (Father/Son/Holy Spirit)"
-          multiline
-          numberOfLines={10}
-          containerStyle={styles.inputBlock}
+        {/* Passage header */}
+        <View style={styles.passageRow}>
+          <Text style={styles.passageRef}>{bibleReference}</Text>
+          {duration > 0 && (
+            <Text style={styles.passageDuration}>{Math.floor(duration / 60)} min</Text>
+          )}
+        </View>
+        <Text style={styles.pageTitle}>Reflection</Text>
+
+        <ReflectionField
+          letter="Q" label="Qualities of God"
+          value={qualities} onChangeText={setQualities}
+          placeholder="Attributes of God (Father / Son / Holy Spirit)"
+          numberOfLines={4}
         />
-        <Text style={styles.sectionLabel}>U - Undertakings / Promises</Text>
-        <Input
-          value={undertakings}
-          onChangeText={setUndertakings}
+        <ReflectionField
+          letter="U" label="Undertakings & Promises"
+          value={undertakings} onChangeText={setUndertakings}
           placeholder="What promises does God make?"
-          multiline
-          numberOfLines={10}
-          containerStyle={styles.inputBlock}
+          numberOfLines={4}
         />
-        <Text style={styles.sectionLabel}>A - Actions / Commands to obey</Text>
-        <Input
-          value={actions}
-          onChangeText={setActions}
+        <ReflectionField
+          letter="A" label="Actions to obey"
+          value={actions} onChangeText={setActions}
           placeholder="Commands in the passage"
-          multiline
-          numberOfLines={3}
-          containerStyle={styles.inputBlock}
         />
-        <Text style={styles.sectionLabel}>L - Lives of People</Text>
-        <Input
-          value={livesOfPeople}
-          onChangeText={setLivesOfPeople}
+        <ReflectionField
+          letter="L" label="Lives of People"
+          value={livesOfPeople} onChangeText={setLivesOfPeople}
           placeholder="Examples to follow or avoid"
-          multiline
-          numberOfLines={3}
-          containerStyle={styles.inputBlock}
         />
-        <Text style={styles.sectionLabel}>I - Iniquities</Text>
-        <Input
-          value={iniquities}
-          onChangeText={setIniquities}
+        <ReflectionField
+          letter="I" label="Iniquities"
+          value={iniquities} onChangeText={setIniquities}
           placeholder="What sin or struggle is God addressing?"
-          multiline
-          numberOfLines={3}
-          containerStyle={styles.inputBlock}
         />
-        <Text style={styles.sectionLabel}>T - Tell to Others</Text>
-        <Input
-          value={tellToOthers}
-          onChangeText={setTellToOthers}
-          placeholder="What truth should I share with others?"
-          multiline
-          numberOfLines={3}
-          containerStyle={styles.inputBlock}
+        <ReflectionField
+          letter="T" label="Tell to Others"
+          value={tellToOthers} onChangeText={setTellToOthers}
+          placeholder="What truth should I share?"
         />
-        <Text style={styles.sectionLabel}>Y - Yield</Text>
-        <Input
-          value={yieldField}
-          onChangeText={setYieldField}
-          placeholder="How to produce the above learning in my present circumstances?"
-          multiline
-          numberOfLines={3}
-          containerStyle={styles.inputBlock}
+        <ReflectionField
+          letter="Y" label="Yield"
+          value={yieldField} onChangeText={setYieldField}
+          placeholder="How to produce this learning in my circumstances?"
         />
+
         {error ? <Text style={styles.error}>{error}</Text> : null}
         <Button title="Save reflection" onPress={handleSave} loading={loading} style={styles.save} />
       </ScrollView>
@@ -137,11 +183,16 @@ export function ReflectionScreen({
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.background },
-  scroll: { padding: 24, paddingBottom: 48 },
-  summary: { marginBottom: 24 },
-  summaryText: { ...typography.body, color: colors.textSecondary },
-  sectionLabel: { ...typography.bodySmall, color: colors.primary, marginBottom: 8, marginTop: 8 },
-  inputBlock: { marginBottom: 8 },
-  error: { ...typography.bodySmall, color: colors.error, marginBottom: 12 },
-  save: { marginTop: 16, marginBottom: 12 },
+  scroll: { paddingHorizontal: 28, paddingTop: 32, paddingBottom: 56 },
+  passageRow: {
+    flexDirection: 'row',
+    alignItems: 'baseline',
+    justifyContent: 'space-between',
+    marginBottom: 4,
+  },
+  passageRef: { ...typography.bodySmall, fontFamily: 'Inter_500Medium', color: colors.primary },
+  passageDuration: { ...typography.caption, color: colors.textMuted },
+  pageTitle: { ...typography.displaySm, color: colors.onSurface, marginBottom: 40 },
+  error: { ...typography.bodySmall, color: colors.error, marginBottom: 16 },
+  save: { marginTop: 8, alignSelf: 'stretch' },
 });

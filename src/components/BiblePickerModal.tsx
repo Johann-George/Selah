@@ -24,7 +24,6 @@ interface Props {
 }
 
 const books: BibleBook[] = bibleData as BibleBook[];
-
 type Section = 'book' | 'chapter' | 'verse';
 
 export function BiblePickerModal({ visible, onConfirm, onClose }: Props) {
@@ -50,10 +49,7 @@ export function BiblePickerModal({ visible, onConfirm, onClose }: Props) {
     setTillVerse(null);
   };
 
-  const handleClose = () => {
-    reset();
-    onClose();
-  };
+  const handleClose = () => { reset(); onClose(); };
 
   const handleBookSelect = (book: BibleBook) => {
     setSelectedBook(book);
@@ -84,15 +80,16 @@ export function BiblePickerModal({ visible, onConfirm, onClose }: Props) {
   const breadcrumb = [
     selectedBook?.book,
     selectedChapter ? `Ch. ${selectedChapter}` : null,
-    fromVerse ? `v.${fromVerse}${tillVerse && tillVerse !== fromVerse ? `-${tillVerse}` : ''}` : null,
-  ]
-    .filter(Boolean)
-    .join(' › ');
+    fromVerse ? `v.${fromVerse}${tillVerse && tillVerse !== fromVerse ? `–${tillVerse}` : ''}` : null,
+  ].filter(Boolean).join('  ›  ');
 
   return (
     <Modal visible={visible} animationType="slide" transparent onRequestClose={handleClose}>
       <View style={styles.overlay}>
         <SafeAreaView style={styles.sheet}>
+          {/* Handle */}
+          <View style={styles.handle} />
+
           {/* Header */}
           <View style={styles.header}>
             <TouchableOpacity onPress={handleClose}>
@@ -116,8 +113,7 @@ export function BiblePickerModal({ visible, onConfirm, onClose }: Props) {
             {(['book', 'chapter', 'verse'] as Section[]).map((s) => {
               const label = s === 'book' ? 'Book' : s === 'chapter' ? 'Chapter' : 'Verses';
               const active = section === s;
-              const disabled =
-                (s === 'chapter' && !selectedBook) || (s === 'verse' && !selectedChapter);
+              const disabled = (s === 'chapter' && !selectedBook) || (s === 'verse' && !selectedChapter);
               return (
                 <TouchableOpacity
                   key={s}
@@ -139,10 +135,10 @@ export function BiblePickerModal({ visible, onConfirm, onClose }: Props) {
               {books.map((b) => (
                 <TouchableOpacity
                   key={b.abbr}
-                  style={[styles.item, selectedBook?.abbr === b.abbr && styles.itemSelected]}
+                  style={[styles.bookItem, selectedBook?.abbr === b.abbr && styles.bookItemSelected]}
                   onPress={() => handleBookSelect(b)}
                 >
-                  <Text style={[styles.itemText, selectedBook?.abbr === b.abbr && styles.itemTextSelected]}>
+                  <Text style={[styles.bookText, selectedBook?.abbr === b.abbr && styles.bookTextSelected]}>
                     {b.book}
                   </Text>
                 </TouchableOpacity>
@@ -194,10 +190,7 @@ export function BiblePickerModal({ visible, onConfirm, onClose }: Props) {
 }
 
 function VerseRow({
-  label,
-  verses,
-  selected,
-  onSelect,
+  label, verses, selected, onSelect,
 }: {
   label: string;
   verses: number[];
@@ -225,60 +218,79 @@ function VerseRow({
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.45)',
+    backgroundColor: 'rgba(28,31,29,0.4)',
     justifyContent: 'flex-end',
   },
   sheet: {
     backgroundColor: colors.background,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    maxHeight: '80%',
+    borderTopLeftRadius: 32,
+    borderTopRightRadius: 32,
+    maxHeight: '82%',
     paddingBottom: 16,
+    shadowColor: colors.onSurface,
+    shadowOffset: { width: 0, height: -4 },
+    shadowOpacity: 0.06,
+    shadowRadius: 32,
+    elevation: 8,
+  },
+  handle: {
+    width: 36,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: colors.surfaceContainer,
+    alignSelf: 'center',
+    marginTop: 12,
+    marginBottom: 4,
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 20,
+    paddingHorizontal: 24,
     paddingVertical: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.border,
   },
-  title: { ...typography.body, fontWeight: '700', color: colors.text },
-  cancelText: { ...typography.body, color: colors.textSecondary },
-  doneText: { ...typography.body, fontWeight: '700', color: colors.primary },
+  title: { ...typography.body, fontFamily: 'Inter_600SemiBold', color: colors.onSurface },
+  cancelText: { ...typography.body, color: colors.onSurfaceVariant },
+  doneText: { ...typography.body, fontFamily: 'Inter_600SemiBold', color: colors.primary },
   doneDisabled: { color: colors.textMuted },
   breadcrumbRow: {
-    paddingHorizontal: 20,
-    paddingVertical: 8,
-    backgroundColor: colors.surfaceElevated,
+    paddingHorizontal: 24,
+    paddingVertical: 10,
+    backgroundColor: colors.primaryContainer,
+    marginHorizontal: 16,
+    borderRadius: 16,
+    marginBottom: 4,
   },
-  breadcrumb: { ...typography.caption, color: colors.primary, fontWeight: '600' },
+  breadcrumb: { ...typography.bodySmall, fontFamily: 'Inter_500Medium', color: colors.primaryDim },
   tabs: {
     flexDirection: 'row',
-    paddingHorizontal: 20,
+    paddingHorizontal: 24,
     paddingVertical: 12,
     gap: 8,
   },
   tab: {
-    paddingVertical: 6,
-    paddingHorizontal: 16,
-    borderRadius: 20,
-    backgroundColor: colors.surfaceElevated,
+    paddingVertical: 8,
+    paddingHorizontal: 18,
+    borderRadius: 100,
+    backgroundColor: colors.surfaceContainerLow,
   },
   tabActive: { backgroundColor: colors.primary },
-  tabText: { ...typography.caption, color: colors.textSecondary, fontWeight: '600' },
-  tabTextActive: { color: colors.surface },
-  tabDisabled: { color: colors.border },
-  list: { paddingHorizontal: 20, paddingBottom: 16 },
-  item: {
+  tabText: { ...typography.bodySmall, fontFamily: 'Inter_500Medium', color: colors.onSurfaceVariant },
+  tabTextActive: { color: colors.onPrimary },
+  tabDisabled: { color: colors.textMuted, opacity: 0.5 },
+  list: { paddingHorizontal: 24, paddingBottom: 16 },
+  bookItem: {
     paddingVertical: 14,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.border,
+    paddingHorizontal: 4,
   },
-  itemSelected: { backgroundColor: colors.surfaceElevated, marginHorizontal: -20, paddingHorizontal: 20 },
-  itemText: { ...typography.body, color: colors.text },
-  itemTextSelected: { color: colors.primary, fontWeight: '700' },
+  bookItemSelected: {
+    backgroundColor: colors.primaryContainer,
+    marginHorizontal: -20,
+    paddingHorizontal: 24,
+    borderRadius: 16,
+  },
+  bookText: { ...typography.body, color: colors.onSurface },
+  bookTextSelected: { fontFamily: 'Inter_600SemiBold', color: colors.primary },
   grid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
@@ -289,24 +301,24 @@ const styles = StyleSheet.create({
   cell: {
     width: 48,
     height: 48,
-    borderRadius: 12,
-    backgroundColor: colors.surfaceElevated,
+    borderRadius: 16,
+    backgroundColor: colors.surfaceContainerLow,
     alignItems: 'center',
     justifyContent: 'center',
   },
   cellSelected: { backgroundColor: colors.primary },
-  cellText: { ...typography.body, color: colors.text, fontWeight: '600' },
-  cellTextSelected: { color: colors.surface },
+  cellText: { ...typography.bodySmall, fontFamily: 'Inter_500Medium', color: colors.onSurface },
+  cellTextSelected: { color: colors.onPrimary },
   verseSection: { paddingVertical: 8 },
   verseRow: { marginBottom: 20 },
   verseLabel: {
     ...typography.caption,
-    color: colors.textSecondary,
-    fontWeight: '700',
-    paddingHorizontal: 20,
-    marginBottom: 8,
+    fontFamily: 'Inter_500Medium',
+    color: colors.onSurfaceVariant,
     textTransform: 'uppercase',
     letterSpacing: 0.8,
+    paddingHorizontal: 24,
+    marginBottom: 10,
   },
   verseScroll: { paddingHorizontal: 16, gap: 8, flexDirection: 'row', alignItems: 'center' },
 });

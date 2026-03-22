@@ -35,19 +35,19 @@ export function Header({
     <View style={styles.container}>
       <View style={styles.titleContainer}>
         <Text style={[styles.title, large && styles.titleLarge]}>{title}</Text>
-        {subtitle && <Text style={styles.subtitle}>{subtitle}</Text>}
+        {subtitle ? <Text style={styles.subtitle}>{subtitle}</Text> : null}
       </View>
       <View style={styles.actions}>
+        {showSettings && (
+          <TouchableOpacity onPress={onSettingsPress} style={styles.iconButton}>
+            <Entypo name="cog" size={22} color={colors.onSurfaceVariant} />
+          </TouchableOpacity>
+        )}
         {showProfile && (
           <TouchableOpacity onPress={onProfilePress} style={styles.profileButton}>
             <View style={styles.avatar}>
               <Text style={styles.avatarText}>{initials}</Text>
             </View>
-          </TouchableOpacity>
-        )}
-        {showSettings && (
-          <TouchableOpacity onPress={onSettingsPress} style={styles.iconButton}>
-            <Entypo name="cog" size={24} color={colors.text} />
           </TouchableOpacity>
         )}
       </View>
@@ -59,49 +59,52 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 24,
-    paddingTop: 16,
-    paddingBottom: 12,
+    alignItems: 'flex-start',
+    paddingHorizontal: 28,
+    paddingTop: 20,
+    paddingBottom: 16,
     backgroundColor: colors.background,
   },
-  titleContainer: {
-    flex: 1,
-  },
+  titleContainer: { flex: 1 },
   title: {
-    ...typography.h1,
-    color: colors.text,
+    ...typography.h2,
+    color: colors.onSurface,
   },
   titleLarge: {
-    fontSize: 36,
+    ...typography.displaySm,
+    color: colors.onSurface,
   },
   subtitle: {
     ...typography.bodySmall,
-    color: colors.textSecondary,
+    color: colors.onSurfaceVariant,
     marginTop: 4,
   },
   actions: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 12,
+    paddingTop: 4,
   },
-  profileButton: {
-    padding: 4,
-  },
+  profileButton: {},
   avatar: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: colors.primary,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: colors.primaryContainer,
     justifyContent: 'center',
     alignItems: 'center',
   },
   avatarText: {
-    ...typography.body,
-    color: '#fff',
-    fontWeight: '600',
+    ...typography.bodySmall,
+    fontFamily: 'Inter_600SemiBold',
+    color: colors.primary,
   },
   iconButton: {
-    padding: 4,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: colors.surfaceContainerLow,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });

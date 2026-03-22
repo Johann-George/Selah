@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Entypo } from '@expo/vector-icons';
-import { Button, Card } from '../components';
+import { Button } from '../components';
 import { colors, typography } from '../theme';
 import type { User } from '../types';
 
@@ -12,55 +12,84 @@ interface SettingsScreenProps {
   onBack: () => void;
 }
 
+function SettingRow({ label, value, onPress }: { label: string; value?: string; onPress?: () => void }) {
+  return (
+    <TouchableOpacity style={rowStyles.row} onPress={onPress} disabled={!onPress}>
+      <Text style={rowStyles.label}>{label}</Text>
+      {value ? (
+        <Text style={rowStyles.value}>{value}</Text>
+      ) : (
+        <Entypo name="chevron-right" size={18} color={colors.textMuted} />
+      )}
+    </TouchableOpacity>
+  );
+}
+
+const rowStyles = StyleSheet.create({
+  row: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 14,
+  },
+  label: { ...typography.body, color: colors.onSurface },
+  value: { ...typography.body, color: colors.onSurfaceVariant },
+});
+
+function Section({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <View style={sectionStyles.container}>
+      <Text style={sectionStyles.title}>{title}</Text>
+      <View style={sectionStyles.body}>{children}</View>
+    </View>
+  );
+}
+
+const sectionStyles = StyleSheet.create({
+  container: { marginBottom: 32 },
+  title: {
+    ...typography.caption,
+    fontFamily: 'Inter_500Medium',
+    color: colors.onSurfaceVariant,
+    textTransform: 'uppercase',
+    letterSpacing: 0.8,
+    marginBottom: 8,
+  },
+  body: {
+    backgroundColor: colors.surfaceContainerLowest,
+    borderRadius: 24,
+    paddingHorizontal: 20,
+    shadowColor: colors.onSurface,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.04,
+    shadowRadius: 12,
+    elevation: 1,
+  },
+});
+
 export function SettingsScreen({ user, onSignOut, onBack }: SettingsScreenProps) {
   return (
     <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
       <View style={styles.header}>
-        <TouchableOpacity onPress={onBack} style={styles.backButton}>
-          <Entypo name="chevron-left" size={28} color={colors.text} />
+        <TouchableOpacity onPress={onBack} style={styles.backBtn}>
+          <Entypo name="chevron-left" size={22} color={colors.onSurfaceVariant} />
         </TouchableOpacity>
         <Text style={styles.title}>Settings</Text>
         <View style={styles.placeholder} />
       </View>
-      <ScrollView style={styles.content}>
-        <Card style={styles.section}>
-          <Text style={styles.sectionTitle}>Account</Text>
-          <View style={styles.item}>
-            <Text style={styles.label}>Name</Text>
-            <Text style={styles.value}>{user.name}</Text>
-          </View>
-          <View style={styles.item}>
-            <Text style={styles.label}>Email</Text>
-            <Text style={styles.value}>{user.email}</Text>
-          </View>
-        </Card>
-
-        <Card style={styles.section}>
-          <Text style={styles.sectionTitle}>Preferences</Text>
-          <TouchableOpacity style={styles.item}>
-            <Text style={styles.label}>Notifications</Text>
-            <Entypo name="chevron-right" size={20} color={colors.textMuted} />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.item}>
-            <Text style={styles.label}>Theme</Text>
-            <Entypo name="chevron-right" size={20} color={colors.textMuted} />
-          </TouchableOpacity>
-        </Card>
-
-        <Card style={styles.section}>
-          <Text style={styles.sectionTitle}>Data</Text>
-          <TouchableOpacity style={styles.item}>
-            <Text style={styles.label}>Export data</Text>
-            <Entypo name="chevron-right" size={20} color={colors.textMuted} />
-          </TouchableOpacity>
-        </Card>
-
-        <Button
-          title="Sign out"
-          onPress={onSignOut}
-          variant="outline"
-          style={styles.signOut}
-        />
+      <ScrollView contentContainerStyle={styles.scroll}>
+        <Section title="Account">
+          <SettingRow label="Name" value={user.name} />
+          <SettingRow label="Email" value={user.email} />
+        </Section>
+        <Section title="Preferences">
+          <SettingRow label="Notifications" onPress={() => {}} />
+          <SettingRow label="Theme" onPress={() => {}} />
+        </Section>
+        <Section title="Data">
+          <SettingRow label="Export data" onPress={() => {}} />
+        </Section>
+        <Button title="Sign out" onPress={onSignOut} variant="outline" style={styles.signOut} />
       </ScrollView>
     </SafeAreaView>
   );
@@ -72,43 +101,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 16,
+    paddingHorizontal: 20,
     paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.border,
   },
-  backButton: {
-    padding: 4,
+  backBtn: {
+    width: 40, height: 40, borderRadius: 20,
+    backgroundColor: colors.surfaceContainerLow,
+    justifyContent: 'center', alignItems: 'center',
   },
-  title: {
-    ...typography.h2,
-    color: colors.text,
-  },
-  placeholder: {
-    width: 36,
-  },
-  content: { flex: 1, padding: 24 },
-  section: { marginBottom: 16, padding: 16 },
-  sectionTitle: {
-    ...typography.h3,
-    color: colors.text,
-    marginBottom: 12,
-  },
-  item: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.border,
-  },
-  label: {
-    ...typography.body,
-    color: colors.text,
-  },
-  value: {
-    ...typography.body,
-    color: colors.textSecondary,
-  },
-  signOut: { marginTop: 24 },
+  title: { ...typography.h3, color: colors.onSurface },
+  placeholder: { width: 40 },
+  scroll: { paddingHorizontal: 28, paddingTop: 16, paddingBottom: 48 },
+  signOut: { alignSelf: 'stretch', marginTop: 8 },
 });

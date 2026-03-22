@@ -24,19 +24,19 @@ interface ButtonProps {
 const variantStyles: Record<Variant, { container: ViewStyle; text: TextStyle }> = {
   primary: {
     container: { backgroundColor: colors.primary },
-    text: { color: colors.surface },
+    text: { color: colors.onPrimary, fontFamily: 'Inter_600SemiBold' },
   },
   secondary: {
-    container: { backgroundColor: colors.secondary },
-    text: { color: colors.text },
+    container: { backgroundColor: colors.secondaryContainer },
+    text: { color: colors.secondary, fontFamily: 'Inter_600SemiBold' },
   },
   outline: {
     container: { backgroundColor: 'transparent', borderWidth: 1.5, borderColor: colors.primary },
-    text: { color: colors.primary },
+    text: { color: colors.primary, fontFamily: 'Inter_600SemiBold' },
   },
   ghost: {
     container: { backgroundColor: 'transparent' },
-    text: { color: colors.primary },
+    text: { color: colors.primary, fontFamily: 'Inter_600SemiBold' },
   },
 };
 
@@ -55,10 +55,10 @@ export function Button({
       style={[styles.base, vs.container, style, (disabled || loading) && styles.disabled]}
       onPress={onPress}
       disabled={disabled || loading}
-      activeOpacity={0.8}
+      activeOpacity={0.82}
     >
       {loading ? (
-        <ActivityIndicator color={vs.text.color} size="small" />
+        <ActivityIndicator color={vs.text.color as string} size="small" />
       ) : (
         <Text style={[styles.text, vs.text, textStyle]}>{title}</Text>
       )}
@@ -68,16 +68,17 @@ export function Button({
 
 const styles = StyleSheet.create({
   base: {
-    paddingVertical: 14,
-    paddingHorizontal: 24,
-    borderRadius: 12,
+    paddingVertical: 16,
+    paddingHorizontal: 32,
+    borderRadius: 100,
     alignItems: 'center',
     justifyContent: 'center',
-    minHeight: 48,
+    minHeight: 52,
   },
   text: {
     ...typography.body,
-    fontWeight: '600',
+    fontFamily: 'Inter_600SemiBold',
+    letterSpacing: 0.2,
   },
-  disabled: { opacity: 0.5 },
+  disabled: { opacity: 0.45 },
 });
