@@ -28,7 +28,7 @@ export function SessionSummaryScreen({
     <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
       <View style={styles.content}>
         <View style={styles.iconContainer}>
-          <Entypo name="check" size={64} color={colors.success} />
+          <Entypo name="check" size={44} color={colors.success} />
         </View>
         <Text style={styles.title}>Quiet Time Complete</Text>
         <Text style={styles.subtitle}>Well done! You've completed your reflection.</Text>
@@ -71,8 +71,8 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.background },
   content: { flex: 1, padding: 24, justifyContent: 'center', alignItems: 'center' },
   iconContainer: {
-    width: 120,
-    height: 120,
+    width: 80,
+    height: 80,
     borderRadius: 60,
     backgroundColor: colors.successLight,
     justifyContent: 'center',
@@ -85,9 +85,7 @@ const styles = StyleSheet.create({
   statRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.border,
+    paddingVertical: 10,
   },
   statContent: { flex: 1, marginLeft: 16 },
   statLabel: { ...typography.bodySmall, color: colors.textMuted, marginBottom: 4 },

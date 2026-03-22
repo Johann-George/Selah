@@ -1,73 +1,50 @@
 /**
- * Start session screen with timer and Bible reference input.
+ * Start session screen — opens Bible picker on Start, then hands off to ReflectionScreenConnected.
  */
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { Button, Input, Card } from '../components';
+import { Button, Card, BiblePickerModal } from '../components';
 import { colors, typography } from '../theme';
-
-function formatTime(seconds: number): string {
-  const m = Math.floor(seconds / 60);
-  const s = seconds % 60;
-  return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
-}
 
 interface StartSessionScreenProps {
   onStart: (duration: number, bibleReference: string) => void;
   onTimerUpdate?: (seconds: number, isRunning: boolean) => void;
 }
 
-export function StartSessionScreen({ onStart, onTimerUpdate }: StartSessionScreenProps) {
-  const [running, setRunning] = useState(false);
-  const [seconds, setSeconds] = useState(0);
-  const [bibleReference, setBibleReference] = useState('');
-  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
-
-  useEffect(() => {
-    if (running) {
-      intervalRef.current = setInterval(() => setSeconds((s) => s + 1), 1000);
-    } else if (intervalRef.current) {
-      clearInterval(intervalRef.current);
-      intervalRef.current = null;
-    }
-    onTimerUpdate?.(seconds, running);
-    return () => {
-      if (intervalRef.current) clearInterval(intervalRef.current);
-    };
-  }, [running, seconds, onTimerUpdate]);
-
-  const handleStart = () => {
-    setRunning(false);
-    onStart(seconds, bibleReference.trim() || 'Not specified');
-  };
+export function StartSessionScreen({ onStart }: StartSessionScreenProps) {
+  const [pickerVisible, setPickerVisible] = useState(false);
 
   return (
     <View style={styles.container}>
       <View style={styles.content}>
-        <Card style={styles.timerCard}>
-          <Text style={styles.timer}>{formatTime(seconds)}</Text>
+        <Card style={styles.card}>
+          <Text style={styles.heading}>Ready to begin?</Text>
+          <Text style={styles.sub}>Select a Bible passage to start your quiet time.</Text>
           <Button
-            title={running ? 'Pause' : 'Start'}
-            onPress={handleStart}
-            variant={running ? 'secondary' : 'primary'}
-            style={styles.timerBtn}
+            title="Start"
+            onPress={() => setPickerVisible(true)}
+            style={styles.btn}
           />
         </Card>
-        <Input
-          label="Bible passage"
-          value={bibleReference}
-          onChangeText={setBibleReference}
-          placeholder="e.g. John 3:16"
-        />
       </View>
+
+      <BiblePickerModal
+        visible={pickerVisible}
+        onConfirm={(reference) => {
+          setPickerVisible(false);
+          onStart(0, reference);
+        }}
+        onClose={() => setPickerVisible(false)}
+      />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.background },
-  content: { flex: 1, padding: 24 },
-  timerCard: { marginBottom: 24, alignItems: 'center' },
-  timer: { fontSize: 48, fontWeight: '700', color: colors.primary, marginBottom: 16 },
-  timerBtn: { minWidth: 120 },
+  content: { flex: 1, padding: 24, justifyContent: 'center' },
+  card: { alignItems: 'center', gap: 8 },
+  heading: { ...typography.h2, color: colors.text, marginBottom: 4 },
+  sub: { ...typography.body, color: colors.textSecondary, textAlign: 'center', marginBottom: 16 },
+  btn: { minWidth: 140 },
 });
