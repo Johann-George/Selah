@@ -24,7 +24,7 @@ export function ActivitiesScreenConnected() {
       sessions={sessions}
       loading={loading}
       onSignOut={() => signOut()}
-      onBack={() => navigation.goBack()}
+      // onBack={() => navigation.goBack()}
     />
   );
 }

@@ -20,7 +20,7 @@ export function HomeScreenConnected() {
 
   return (
     <HomeScreen
-      onStartSession={() => navigation.navigate('Reflection', { screen: 'Reflect' })}
+      onStartSession={() => navigation.navigate('Reflection')}
       todayDuration={duration}
       todayReference={reference}
       userName={user.name}
