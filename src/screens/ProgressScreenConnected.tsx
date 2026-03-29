@@ -13,7 +13,7 @@ export function ProgressScreenConnected() {
     <ProgressScreen
       heatmapData={heatmapData}
       totalSessions={totalSessions}
-      onBack={() => navigation.goBack()}
+      // onBack={() => navigation.goBack()}
     />
   );
 }
