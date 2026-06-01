@@ -74,4 +74,5 @@ export const darkColors = {
 // Static fallback (light) — used only before ThemeContext is available
 export const colors = lightColors;
 
-export type Colors = typeof lightColors;
+export type Colors = Record<keyof typeof lightColors, string>;
+

@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { CompositeNavigationProp } from '@react-navigation/native';
 import { MaterialTopTabNavigationProp } from '@react-navigation/material-top-tabs';
@@ -29,6 +29,46 @@ export function ReflectionScreenConnected() {
   } | null>(null);
   const [showSummary, setShowSummary] = useState(false);
   const timerRef = useRef({ seconds: 0, isRunning: false });
+
+  useEffect(() => {
+    if (route.params?.sessionId) {
+      setSessionData({
+        sessionId: route.params.sessionId,
+        duration: route.params.duration || 0,
+        bibleReference: route.params.bibleReference || '',
+      });
+    } else if (
+      route.params?.bibleReference &&
+      (!sessionData || sessionData.bibleReference !== route.params.bibleReference)
+    ) {
+      const createSessionAuto = async () => {
+        try {
+          const session = await createSession(user.id, {
+            date: new Date().toISOString().slice(0, 10),
+            duration: 0,
+            bibleReference: route.params.bibleReference!,
+            qualities: [],
+            undertakings: [],
+            actions: [],
+            livesOfPeople: [],
+            iniquities: [],
+            tellToOthers: [],
+            yield: [],
+          });
+          setSessionData({
+            sessionId: session.id,
+            duration: 0,
+            bibleReference: route.params.bibleReference!,
+          });
+        } catch (error) {
+          console.error('Error creating auto session:', error);
+          const message = error instanceof Error ? error.message : 'Failed to create session';
+          Alert.alert('Error', message);
+        }
+      };
+      createSessionAuto();
+    }
+  }, [route.params, user.id]);
 
   // If showing summary, display summary screen
   if (showSummary && sessionData) {
